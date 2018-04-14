@@ -45,7 +45,7 @@ else:
    ldr r4, [sp, #16]
    sub r5, r5, r4
    /* subtract 1 from original numDisks and store it to numDisks parameter*/
-   ldr r2 [sp, #8]
+   ldr r2, [sp, #8]
    sub r2, r2, #1 
    /* Set end parameter as temp */
    mov r4, r5
