@@ -9,11 +9,7 @@
     @ --------------------------------
     .global main
 main:
-    @ driver function main lives here, modify this for your other functions
-    @ You'll need to scan characters for the operation and to determine
-    @ if the program should repeat.
-    @ To scan a character, and compare it to another, do the following  
-      push {r5, r6, lr}
+      push {r6, r7, r8, lr} @ Saving to stack to use as temp variables in loop 
 loop:
       ldr  r0, =prompt1       @ Ask for user number
       bl printf 
@@ -31,7 +27,25 @@ loop:
       bl scanf
       ldr r7, [sp]            @ Save the scanned value into r7 (second number)
 
-      
+      ldr r0, =operation
+      bl printf               @ Ask for user number (second number)
+
+      ldr r0, =scanchar
+      mov r1, sp
+      bl scanf
+      ldr r8, [sp]            @ Save the scanned value into r8 (operation)
+
+      mov r0, r6              @ Put the scanned values into work registers
+      mov r1, r7
+      cmp r8, #42
+      beq multbranch
+      cmp r8, #43
+      beq addbranch
+      cmp r8, #45
+      beq subbranch
+
+
+
 
       mov     r1, sp          @ Save stack pointer to r1, you must create space
       bl      scanf           @ Scan user's answer
