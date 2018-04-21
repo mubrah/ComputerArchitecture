@@ -43,7 +43,9 @@ loop:
       beq addbranch
       cmp r8, #45
       beq subbranch
-
+      ldr r0, =invalid
+      bl printf
+      b loop
 
 
 
@@ -71,3 +73,5 @@ prompt2:
   .asciz "Enter number 2 please: "
 operation:
   .asciz "Enter operation please: "
+invalid:
+  .asciz "Invalid input, please try again!"
