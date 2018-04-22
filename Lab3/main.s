@@ -31,11 +31,17 @@ loop:
    mov r1, sp
    bl scanf
 
-   ldr r0, =addSign
+   ldr r0, =addSign 
    ldrb r0, [r0]
    ldrb r1, [sp]            @ Save the scanned value into r3 (operation)
    cmp r1, r0 
    beq addbranch
+
+   ldr r0, =subSign
+   ldrb r0, [r0]
+   ldrb r1, [sp]            @ Save the scanned value into r3 (operation)
+   cmp r1, r0 
+   beq subbranch
 
    ldr r0, =invalid //Invalid operation
    bl printf
@@ -52,6 +58,8 @@ addbranch:
 
    b loop
 subbranch:
+   mov r0, r6
+   mov r1, r7
    bl intsub
 
    mov r1, r0
@@ -60,6 +68,8 @@ subbranch:
 
    b loop
 multbranch:
+   mov r0, r6
+   mov r1, r7
    bl intmul
 
    mov r1, r0
