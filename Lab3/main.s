@@ -33,7 +33,7 @@ loop:
       ldr r0, =scanchar
       mov r1, sp
       bl scanf
-      ldr r8, [sp]            @ Save the scanned value into r8 (operation)
+      ldrb r8, [sp]            @ Save the scanned value into r8 (operation)
 
       mov r0, r6              @ Put the scanned values into work registers
       mov r1, r7
@@ -50,7 +50,11 @@ loop:
 addbranch:
       mov r0, r6
       mov r1, r7
+      ldr r0, =test
+      bl printf
       bl intadd
+      @ldr r0, =test Never reaching here, meaning segmentation fault is now in even calling intadd
+      @bl printf
       mov r1, r0
       ldr r0, =result
       bl printf
@@ -60,6 +64,8 @@ multbranch:
       mov r0, r6
       mov r1, r7
       bl intmul
+      mov r1, r0
+      ldr r0, =result
       bl printf
       b exit
 
@@ -67,6 +73,8 @@ subbranch:
       mov r0, r6
       mov r1, r7
       bl intsub
+      mov r1, r0
+      ldr r0, =result
       bl printf
       b exit 
 
@@ -97,6 +105,8 @@ prompt2:
 operation:
   .asciz "Enter operation please: "
 invalid:
-  .asciz "Invalid input, please try again!"
+  .asciz "Invalid input, please try again! \n"
 result:
    .asciz "Result: %d"
+test:
+   .asciz "test: %d"
