@@ -33,17 +33,24 @@ loop:
 
    ldr r0, =addSign 
    ldrb r0, [r0]
-   ldrb r1, [sp]            @ Save the scanned value into r3 (operation)
+   ldrb r1, [sp]       
    cmp r1, r0 
    beq addbranch
 
    ldr r0, =subSign
    ldrb r0, [r0]
-   ldrb r1, [sp]            @ Save the scanned value into r3 (operation)
+   ldrb r1, [sp]           
    cmp r1, r0 
    beq subbranch
 
-   ldr r0, =invalid //Invalid operation
+
+   ldr r0, =multSign
+   ldrb r0, [r0]
+   ldrb r1, [sp]            
+   cmp r1, r0 
+   beq multbranch
+
+   ldr r0, =invalid 
    bl printf
    b loop
 
