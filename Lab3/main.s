@@ -9,7 +9,7 @@
     @ --------------------------------
     .global main
 main:
-      push {r6, r7, r8, lr} @ Saving to stack to use as temp variables in loop 
+      push {r6, r7, lr} @ Saving to stack to use as temp variables in loop 
 loop:
       ldr  r0, =prompt1       @ Ask for user number
       bl printf 
@@ -28,21 +28,22 @@ loop:
       ldr r7, [sp]            @ Save the scanned value into r7 (second number)
 
       ldr r0, =operation
-      bl printf               @ Ask for user number (second number)
+      bl printf               @ Ask for user operation
 
       ldr r0, =scanchar
       mov r1, sp
       bl scanf
-      ldrb r8, [sp]            @ Save the scanned value into r8 (operation)
 
-      mov r0, r6              @ Put the scanned values into work registers
-      mov r1, r7
-      cmp r8, #42
-      beq multbranch
-      cmp r8, #43
+      ldr r0, =test2
+      bl printf
+      
+      ldr r0, =addSign
+      ldrb r0, [r0]
+      ldrb r1, [sp]            @ Save the scanned value into r3 (operation)
+      cmp r1, r0 
+
       beq addbranch
-      cmp r8, #45
-      beq subbranch
+
       ldr r0, =invalid
       bl printf
       b loop
@@ -50,6 +51,7 @@ loop:
 addbranch:
       mov r0, r6
       mov r1, r7
+
       ldr r0, =test
       bl printf
       bl intadd
@@ -109,4 +111,14 @@ invalid:
 result:
    .asciz "Result: %d"
 test:
-   .asciz "test: %d"
+   .asciz "%c"
+
+test2:
+   .asciz "%c ahhh"
+
+multSign: 
+    .byte   '*'
+addSign:
+    .byte   '+'
+subSign:
+    .byte   '-'
