@@ -47,8 +47,31 @@ loop:
       bl printf
       b loop
 
+addbranch:
+      mov r0, r6
+      mov r1, r7
+      bl intadd
+      mov r1, r0
+      ldr r0, =result
+      bl printf
+      b exit 
+
+multbranch:
+      mov r0, r6
+      mov r1, r7
+      bl intmul
+      bl printf
+      b exit
+
+subbranch:
+      mov r0, r6
+      mov r1, r7
+      bl intsub
+      bl printf
+      b exit 
 
 
+exit:
       mov     r1, sp          @ Save stack pointer to r1, you must create space
       bl      scanf           @ Scan user's answer
       ldr     r1, =yes        @ Put address of 'y' in r1
@@ -75,3 +98,5 @@ operation:
   .asciz "Enter operation please: "
 invalid:
   .asciz "Invalid input, please try again!"
+result:
+   .asciz "Result: %d"

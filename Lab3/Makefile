@@ -1,11 +1,13 @@
-FLAGS=-O1 
+FLAGS=-O1 -g  
 # list .s source files here
 SRCFILES=main.s intadd.s intsub.s intmul.s
 
-all:	intcalc
+all: intcalc
 
 clean: 
 	rm -f *.o intcalc
-	
-intcalc : main.s intadd.s intmul.s intsub.s
-	gcc -o calc main.s intadd.s intmul.s intsub.s
+
+
+intcalc: $(SRCFILES) 
+	gcc $(FLAGS) -o intcalc $^ 
+

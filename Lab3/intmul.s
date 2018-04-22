@@ -6,5 +6,5 @@
     .arch armv6
     .fpu vfp 
 
- .global intmul.s
+ .global intmul
  intmul: 
