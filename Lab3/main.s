@@ -1,58 +1,58 @@
    .syntax unified
    .arch armv6
    .fpu vfp
-
+   @roee landesman
    .global main
 
 main:
    push {r6, r7, lr}
 
 loop:
-   ldr r0, =prompt1
+   ldr r0, =prompt1     @ number 1 print message
+   bl printf
+
+   ldr r0, =scannumber  @ scan the number
+   mov r1, sp           
+   bl scanf
+   ldr r6, [sp]         @ store number 1 in register r6
+
+   ldr r0, =prompt2     @ number 2 print message
    bl printf
 
    ldr r0, =scannumber
    mov r1, sp
    bl scanf
-   ldr r6, [sp] 
+   ldr r7, [sp]         @ store number 2 in register r7
 
-   ldr r0, =prompt2
+   ldr r0, =operation   @ ask for operation from user
    bl printf
 
-   ldr r0, =scannumber
-   mov r1, sp
-   bl scanf
-   ldr r7, [sp]
-
-   ldr r0, =operation
-   bl printf
-
-   ldr r0, =scanchar
+   ldr r0, =scanchar    @ scan for operation
    mov r1, sp
    bl scanf
 
-   ldr r0, =addSign 
-   ldrb r0, [r0]
-   ldrb r1, [sp]       
-   cmp r1, r0 
-   beq addbranch
+   ldr r0, =addSign @ Load the address for addition sign
+   ldrb r0, [r0]    @ Load the actual value for '+'
+   ldrb r1, [sp]    @ Save the value from the last scan (operation-scan)
+   cmp r1, r0       @ Compare the two!
+   beq addbranch    @ Branch if equal
 
-   ldr r0, =subSign
+   ldr r0, =subSign @ Same as above, but with subtraction
    ldrb r0, [r0]
    ldrb r1, [sp]           
    cmp r1, r0 
    beq subbranch
 
 
-   ldr r0, =multSign
+   ldr r0, =multSign  @ Same as above, but with multiplication
    ldrb r0, [r0]
    ldrb r1, [sp]            
    cmp r1, r0 
    beq multbranch
 
-   ldr r0, =invalid 
+   ldr r0, =invalid   @ Invalid message/print
    bl printf
-   b loop
+   b loop             @ Infinite loop, need to add Y/N option 
 
 addbranch:
    mov r0, r6
@@ -104,7 +104,7 @@ result:
    .asciz "Result: %d \n"
 test:
    .asciz "%c"
-test2:
+test2:      @ Ignore this, just for testing purposes 
    .asciz "%c ahhh"
 
 multSign: 
