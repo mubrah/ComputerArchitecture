@@ -7,22 +7,18 @@
     .fpu vfp 
 
  .global intadd
- intadd: 
- 	push {r0,r1,r2, lr}
- 	  ldr r0, =test
-      bl printf
 
- main:
- 	and r2, r0, r1
- 	eor r0, r0, r1
- 	mov r1, r3, LSL #1 @ Left shift argument included in ARM Assembly ISA
+intadd: 
+   push {r1,r2,lr}
 
- 	cmp r1, #0
- 	bne main
+main:
+   cmp r1, #0 @ Check if register r1 is value 0
+   beq done @ Exit if register is 0 
 
- done:
- 	pop {r0,r1,r2, lr}
+   and r2, r0, r1
+   eor r0, r0, r1
+   mov r1, r2, LSL #1 @ Left shift argument included in ARM Assembly ISA
+   b main
 
-
-test:
-   .asciz "test: %d"
+done:
+   pop {r1,r2,pc}
