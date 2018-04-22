@@ -52,7 +52,7 @@ loop:
 
    ldr r0, =invalid   @ Invalid message/print
    bl printf
-   b loop             @ Infinite loop, need to add Y/N option 
+   b loop           
 
 addbranch:
    mov r0, r6
@@ -63,7 +63,7 @@ addbranch:
    ldr r0, =result
    bl printf
 
-   b loop
+   b finalQ
 subbranch:
    mov r0, r6
    mov r1, r7
@@ -73,7 +73,7 @@ subbranch:
    ldr r0, =result
    bl printf
 
-   b loop
+   b finalQ
 multbranch:
    mov r0, r6
    mov r1, r7
@@ -83,7 +83,24 @@ multbranch:
    ldr r0, =result
    bl printf
 
-   b loop
+   b finalQ
+
+finalQ:
+  ldr r0, =repeat
+  bl printf
+
+  ldr r0, =scanchar
+  mov r1, sp
+  bl scanf
+
+  ldr r0, =yes
+  ldrb r0, [r0]
+  ldrb r1, [sp]           
+  cmp r1, r0 
+  beq loop
+  pop {r6, r7, lr}
+
+
 
 
 scanchar:
@@ -102,6 +119,8 @@ invalid:
   .asciz "Invalid input, please try again! \n"
 result:
    .asciz "Result: %d \n"
+repeat:
+   .asciz "Would you like to continue? If so, enter char "y": "
 test:
    .asciz "%c"
 test2:      @ Ignore this, just for testing purposes 
@@ -115,5 +134,3 @@ subSign:
     .byte   '-'
 yes:
     .byte   'y'
-no:
-    .byte   'n'
