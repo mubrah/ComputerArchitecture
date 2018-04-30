@@ -1,4 +1,4 @@
 # cpe315-lab3
-Lab 3 Starter Code
+Roee Landesman
+April 21st, 2018
 
-Modify this file to include your name(s).
