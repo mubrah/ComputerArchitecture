@@ -1,5 +1,5 @@
 CXX = g++
-CFLAGS = -O1 -Wall -g
+CFLAGS = -O4 -Wall -g
 SRCS = matadd.s matadd-driver.o
 BIN = matadd
 
