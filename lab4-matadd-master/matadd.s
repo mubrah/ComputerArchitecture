@@ -54,11 +54,11 @@ width_loop_inner:
    ldr r7, [r2, r4, lsl #2]
    ldr r7, [r7, r5, lsl #2]
    @ add the two values of the matrices and put in r8
-   add r8, r6, r7
+   add r7, r6, r7
    @ load the address of C[i] into r7
    ldr r9, [r0, r4, lsl #2]
    @ store value of C[i][j] (calculated using r9 from above) into r8
-   str r8, [r9, r5, lsl #2]
+   str r7, [r9, r5, lsl #2]
    b width_loop_inner
 
 exit:
