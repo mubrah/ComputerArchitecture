@@ -92,37 +92,76 @@ void setCarryOverflow (int num1, int num2, OFType oftype) {
 // CPE 315: You're given the code for evaluating BEQ, and you'll need to 
 // complete the rest of these conditions. See Page 208 of the armv7 manual
 static int checkCondition(unsigned short cond) {
-  switch(cond) {
+  switch(cond) { 
     case EQ:
       if (flags.Z == 1) {
         return TRUE;
       }
       break;
     case NE:
+      if(flags.Z == 0){
+        return True;
+      }
       break;
     case CS:
+      if(flags.C == 1){
+        return True;
+      }
       break;
     case CC:
+      if(flags.C == 0){
+        return True;
+      }
       break;
     case MI:
+      if(flags.N == 1){
+        return True;
+      }
       break;
     case PL:
+      if(flags.N == 0){
+        return True;
+      }
       break;
     case VS:
+      if(flags.V == 1){
+        return True;
+      }
       break;
     case VC:
+      if(flags.V == 0){
+        return True;
+      }
       break;
     case HI:
+      if(flags.C == 1 && flags.Z == 0){
+        return True;
+      }
       break;
     case LS:
+      if(flags.C == 0 || flags.Z == 1){
+        return True;
+      }
       break;
     case GE:
+      if(flags.N == flags.V){
+        return True;
+      }
       break;
     case LT:
+      if(flags.N != flags.V){
+        return True;
+      }
       break;
     case GT:
+      if(flags.Z == 0 && flags.N == flags.V){
+        return True;
+      }
       break;
     case LE:
+      if(flags.Z == 1 || flags.N != flags.V){
+        return True;
+      }
       break;
     case AL:
       return TRUE;
