@@ -99,67 +99,67 @@ static int checkCondition(unsigned short cond) {
       }
       break;
     case NE:
-      if(flags.Z == 0){
+      if (flags.Z == 0) {
         return True;
       }
       break;
     case CS:
-      if(flags.C == 1){
+      if (flags.C == 1) {
         return True;
       }
       break;
     case CC:
-      if(flags.C == 0){
+      if (flags.C == 0) {
         return True;
       }
       break;
     case MI:
-      if(flags.N == 1){
+      if (flags.N == 1) {
         return True;
       }
       break;
     case PL:
-      if(flags.N == 0){
+      if (flags.N == 0) {
         return True;
       }
       break;
     case VS:
-      if(flags.V == 1){
+      if (flags.V == 1) {
         return True;
       }
       break;
     case VC:
-      if(flags.V == 0){
+      if (flags.V == 0) {
         return True;
       }
       break;
     case HI:
-      if(flags.C == 1 && flags.Z == 0){
+      if (flags.C == 1 && flags.Z == 0) {
         return True;
       }
       break;
     case LS:
-      if(flags.C == 0 || flags.Z == 1){
+      if (flags.C == 0 || flags.Z == 1) {
         return True;
       }
       break;
     case GE:
-      if(flags.N == flags.V){
+      if (flags.N == flags.V) {
         return True;
       }
       break;
     case LT:
-      if(flags.N != flags.V){
+      if (flags.N != flags.V) {
         return True;
       }
       break;
     case GT:
-      if(flags.Z == 0 && flags.N == flags.V){
+      if (flags.Z == 0 && flags.N == flags.V) {
         return True;
       }
       break;
     case LE:
-      if(flags.Z == 1 || flags.N != flags.V){
+      if (flags.Z == 1 || flags.N != flags.V) {
         return True;
       }
       break;
