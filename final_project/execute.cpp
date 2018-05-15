@@ -1,6 +1,6 @@
 #include "thumbsim.hpp"
 // These are just the register NUMBERS
-#define PC_REG 15  
+#define PC_REG 15
 #define LR_REG 14
 #define SP_REG 13
 
@@ -90,10 +90,10 @@ void setCarryOverflow (int num1, int num2, OFType oftype) {
 }
 
 /* DONE */
-// CPE 315: You're given the code for evaluating BEQ, and you'll need to 
+// CPE 315: You're given the code for evaluating BEQ, and you'll need to
 // complete the rest of these conditions. See Page 208 of the armv7 manual
 static int checkCondition(unsigned short cond) {
-  switch(cond) { 
+  switch(cond) {
     case EQ:
       if (flags.Z == 1) {
         return TRUE;
@@ -101,67 +101,67 @@ static int checkCondition(unsigned short cond) {
       break;
     case NE:
       if (flags.Z == 0) {
-        return True;
+        return TRUE;
       }
       break;
     case CS:
       if (flags.C == 1) {
-        return True;
+        return TRUE;
       }
       break;
     case CC:
       if (flags.C == 0) {
-        return True;
+        return TRUE;
       }
       break;
     case MI:
       if (flags.N == 1) {
-        return True;
+        return TRUE;
       }
       break;
     case PL:
       if (flags.N == 0) {
-        return True;
+        return TRUE;
       }
       break;
     case VS:
       if (flags.V == 1) {
-        return True;
+        return TRUE;
       }
       break;
     case VC:
       if (flags.V == 0) {
-        return True;
+        return TRUE;
       }
       break;
     case HI:
       if (flags.C == 1 && flags.Z == 0) {
-        return True;
+        return TRUE;
       }
       break;
     case LS:
       if (flags.C == 0 || flags.Z == 1) {
-        return True;
+        return TRUE;
       }
       break;
     case GE:
       if (flags.N == flags.V) {
-        return True;
+        return TRUE;
       }
       break;
     case LT:
       if (flags.N != flags.V) {
-        return True;
+        return TRUE;
       }
       break;
     case GT:
       if (flags.Z == 0 && flags.N == flags.V) {
-        return True;
+        return TRUE;
       }
       break;
     case LE:
       if (flags.Z == 1 || flags.N != flags.V) {
-        return True;
+        return TRUE;
       }
       break;
     case AL:
@@ -250,7 +250,7 @@ void execute() {
           break;
       }
       break;
-    case BL: 
+    case BL:
       // This instruction is complete, nothing needed here
       bl_ops = decode(blupper);
       if (bl_ops == BL_UPPER) {
@@ -258,7 +258,7 @@ void execute() {
         instr2 = imem[PC];
         BL_Type bllower(instr2);
         if (blupper.instr.bl_upper.s) {
-          addr = static_cast<unsigned int>(0xff<<24) | 
+          addr = static_cast<unsigned int>(0xff<<24) |
             ((~(bllower.instr.bl_lower.j1 ^ blupper.instr.bl_upper.s))<<23) |
             ((~(bllower.instr.bl_lower.j2 ^ blupper.instr.bl_upper.s))<<22) |
             ((blupper.instr.bl_upper.imm10)<<12) |
@@ -274,7 +274,7 @@ void execute() {
         rf.write(PC_REG, PC + 2 + addr);
 
         stats.numRegReads += 1;
-        stats.numRegWrites += 2; 
+        stats.numRegWrites += 2;
       }
       else {
         cerr << "Bad BL format." << endl;
