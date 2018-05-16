@@ -224,41 +224,50 @@ void execute() {
       add_ops = decode(alu);
       switch(add_ops) {
         case ALU_LSLI:
-          // TODO: needs stats and Z and N flags
+          // TODO: needs stats + Z, N flags
           rf.write(alu.instr.lsli.rd, rf[alu.instr.lsli.rm] << rf[alu.instr.lsli.imm]);
           setCarryOverflow(rf[alu.instr.lsli.rm], rf[alu.instr.lsli.imm], OF_SHIFT);
           break;
         case ALU_ADDR:
-          // TODO: needs stats and flags
+          // TODO: needs stats + N, Z, V flags
           rf.write(alu.instr.addr.rd, rf[alu.instr.addr.rn] + rf[alu.instr.addr.rm]);
+          setCarryOverflow(rf[alu.instr.addr.rn],rf[alu.instr.addr.rm],OF_ADD);
           break;
         case ALU_SUBR:
-          // TODO: needs stats and flags
+          // TODO: needs stats + N, Z, V flags
           rf.write(alu.instr.subr.rd, rf[alu.instr.subr.rn] - rf[alu.instr.subr.rm]);
+          setCarryOverflow(rf[alu.instr.subr.rn],rf[alu.instr.subr.rm],OF_SUB);
           break;
         case ALU_ADD3I:
-          // TODO: needs stats and flags
+          // TODO: needs stats + N, Z, V flags
           rf.write(alu.instr.add3i.rd, rf[alu.instr.add3i.rn] + alu.instr.add3i.imm);
+          setCarryOverflow(rf[alu.instr.add3i.rn],rf[alu.instr.add3i.imm],OF_ADD);
           break;
         case ALU_SUB3I:
-          /* TODO: Add stats and flags and test */
+          // TODO: needs stats + N, Z, V flags
           rf.write(alu.instr.sub3i.rd, rf[alu.instr.sub3i.rn] - alu.instr.sub3i.imm);
+          setCarryOverflow(rf[alu.instr.sub3i.rn],rf[alu.instr.sub3i.imm],OF_SUB);
           break;
         case ALU_MOV:
-          // TODO: needs stats and flags
+          // TODO: needs stats + N, Z, C flags
+          // Why would you need to set flags on a MOV call? 
           rf.write(alu.instr.mov.rdn, alu.instr.mov.imm);
           break;
         case ALU_CMP:
-          // NO rf.write, will subtract cmp.rd - cmp.rm and update flags accordingly 
+          // NO rf.write, will subtract cmp.rdn - cmp.imm and update flags accordingly 
+          // In one document says to subtract the two (favorable), and in another to AddwithCarry the two's compliment
           /* TODO: Add stats and flags and test */
+          setCarryOverflow(rf[alu.instr.cmp.rdn], rf[alu.instr.cmp.imm], OF_SUB);
           break;
         case ALU_ADD8I:
-          // TODO: needs stats and flags
+          // TODO: needs stats and flags(all except C)
           rf.write(alu.instr.add8i.rdn, rf[alu.instr.add8i.rdn] + alu.instr.add8i.imm);
+          setCarryOverflow(rf[alu.instr.add8i.rdn], rf[alu.instr.add8i.imm], OF_ADD);
           break;
         case ALU_SUB8I:
-          // TODO: needs stats and flags
+          // TODO: needs stats and flags(all except C)
           rf.write(alu.instr.sub8i.rdn, rf[alu.instr.sub8i.rdn] - alu.instr.sub8i.imm);
+          setCarryOverflow(rf[alu.instr.sub8i.rdn], rf[alu.instr.sub8i.imm], OF_SUB);
           break;
         default:
           cout << "instruction not implemented" << endl;
