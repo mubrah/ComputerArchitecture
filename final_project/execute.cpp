@@ -224,7 +224,7 @@ void execute() {
       add_ops = decode(alu);
       switch(add_ops) {
         case ALU_LSLI:
-          // needs stats and flags
+          // TODO: needs stats and flags
           rf.write(alu.instr.lsli.rd, rf[alu.instr.lsli.rm] << rf[alu.instr.lsli.imm]);
           break;
         case ALU_ADDR:
@@ -232,19 +232,8 @@ void execute() {
           rf.write(alu.instr.addr.rd, rf[alu.instr.addr.rn] + rf[alu.instr.addr.rm]);
           break;
         case ALU_SUBR:
-          // needs stats and flags
+          // TODO: needs stats and flags
           rf.write(alu.instr.subr.rd, rf[alu.instr.subr.rn] - rf[alu.instr.subr.rm]);
-          break;
-        case ALU_ADD3I:
-          // needs stats and flags
-          rf.write(alu.instr.add3i.rd, rf[alu.instr.add3i.rn] + rf[alu.instr.add3i.imm]);
-          break;
-        case ALU_SUB3I:
-          // needs stats and flags
-          rf.write(alu.instr.sub3i.rd, rf[alu.instr.sub3i.rn] - rf[alu.instr.sub3i.imm]);
-          /* TODO: Add stats and flags and test */
-          /* Is the plus supposed to be a minus? */
-          rf.write(alu.instr.subr.rd, rf[alu.instr.subr.rn] + rf[alu.instr.subr.rm]);
           break;
         case ALU_ADD3I:
           // TODO: needs stats and flags
@@ -252,7 +241,6 @@ void execute() {
           break;
         case ALU_SUB3I:
           /* TODO: Add stats and flags and test */
-          /* Is the plus supposed to be a minus? */
           rf.write(alu.instr.sub3i.rd, rf[alu.instr.sub3i.rn] - alu.instr.sub3i.imm);
           break;
         case ALU_MOV:
