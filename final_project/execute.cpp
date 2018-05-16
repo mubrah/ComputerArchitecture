@@ -224,8 +224,9 @@ void execute() {
       add_ops = decode(alu);
       switch(add_ops) {
         case ALU_LSLI:
-          // TODO: needs stats and flags
+          // TODO: needs stats and Z and N flags
           rf.write(alu.instr.lsli.rd, rf[alu.instr.lsli.rm] << rf[alu.instr.lsli.imm]);
+          setCarryOverflow(rf[alu.instr.lsli.rm], rf[alu.instr.lsli.imm], OF_SHIFT);
           break;
         case ALU_ADDR:
           // TODO: needs stats and flags
