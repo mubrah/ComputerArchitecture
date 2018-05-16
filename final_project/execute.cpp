@@ -31,6 +31,11 @@ ASPR flags;
 // flags for each instruction that does that. It only needs to take
 // one parameter as input, the result of whatever operation is executing
 
+/* 
+void setZeroFlag(int Z)
+void setNegativeFlag(int N)
+*/
+
 // This function is complete, you should not have to modify it
 void setCarryOverflow (int num1, int num2, OFType oftype) {
   switch (oftype) {
@@ -219,32 +224,39 @@ void execute() {
       add_ops = decode(alu);
       switch(add_ops) {
         case ALU_LSLI:
-          rf.write(alu.instr.lsli.rd, rf[alu.instr.lsli.rn] << rf[alu.instr.lsli.imm])
+          // needs stats and flags
+          rf.write(alu.instr.lsli.rd, rf[alu.instr.lsli.rm] << rf[alu.instr.lsli.imm]);
           break;
         case ALU_ADDR:
           // needs stats and flags
           rf.write(alu.instr.addr.rd, rf[alu.instr.addr.rn] + rf[alu.instr.addr.rm]);
           break;
         case ALU_SUBR:
-
+          // needs stats and flags
+          rf.write(alu.instr.subr.rd, rf[alu.instr.subr.rn] - rf[alu.instr.subr.rm]);
           break;
         case ALU_ADD3I:
           // needs stats and flags
-          rf.write(alu.instr.add3i.rd, rf[alu.instr.add3i.rn] + alu.instr.add3i.imm);
+          rf.write(alu.instr.add3i.rd, rf[alu.instr.add3i.rn] + rf[alu.instr.add3i.imm]);
           break;
         case ALU_SUB3I:
+          // needs stats and flags
+          rf.write(alu.instr.sub3i.rd, rf[alu.instr.sub3i.rn] - rf[alu.instr.sub3i.imm]);
           break;
         case ALU_MOV:
           // needs stats and flags
           rf.write(alu.instr.mov.rdn, alu.instr.mov.imm);
           break;
         case ALU_CMP:
+          // NO rf.write, will subtract cmp.rd - cmp.rm and update flags accordingly 
           break;
         case ALU_ADD8I:
           // needs stats and flags
           rf.write(alu.instr.add8i.rdn, rf[alu.instr.add8i.rdn] + alu.instr.add8i.imm);
           break;
         case ALU_SUB8I:
+          // needs stats and flags
+          rf.write(alu.instr.sub8i.rdn, rf[alu.instr.sub8i.rdn] - alu.instr.sub8i.imm);
           break;
         default:
           cout << "instruction not implemented" << endl;
