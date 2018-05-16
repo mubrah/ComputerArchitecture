@@ -219,12 +219,14 @@ void execute() {
       add_ops = decode(alu);
       switch(add_ops) {
         case ALU_LSLI:
+          rf.write(alu.instr.lsli.rd, rf[alu.instr.lsli.rn] << rf[alu.instr.lsli.imm])
           break;
         case ALU_ADDR:
           // needs stats and flags
           rf.write(alu.instr.addr.rd, rf[alu.instr.addr.rn] + rf[alu.instr.addr.rm]);
           break;
         case ALU_SUBR:
+
           break;
         case ALU_ADD3I:
           // needs stats and flags
@@ -341,6 +343,7 @@ void execute() {
       misc_ops = decode(misc);
       switch(misc_ops) {
         case MISC_PUSH:
+
           // need to implement
           break;
         case MISC_POP:
