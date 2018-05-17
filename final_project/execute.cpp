@@ -40,7 +40,7 @@ void setZeroFlag(int Z){
     flags.Z = 0;
   }
 }
- 
+
 void setNegativeFlag(int N)
 */
 
@@ -82,7 +82,7 @@ void setCarryOverflow (int num1, int num2, OFType oftype) {
       else {
         flags.V = 1;
       }
-      break;
+      break;2
     case OF_SHIFT:
       // C flag unaffected for shifts by zero
       if (num2 != 0) {
@@ -254,12 +254,14 @@ void execute() {
         case ALU_SUB3I:
           // TODO: needs stats + N, Z, V flags
           rf.write(alu.instr.sub3i.rd, rf[alu.instr.sub3i.rn] - alu.instr.sub3i.imm);
-          setCarryOverflow(rf[alu.instr.sub3i.rn],rf[alu.instr.sub3i.imm],OF_SUB);
+          setCarryOverflow(rf[alu.instr.sub3i.rn], alu.instr.sub3i.imm ,OF_SUB); //Changed here the second paramteter 
           break;
         case ALU_MOV:
           // TODO: needs stats + N, Z, C flags
           // Why would you need to set flags on a MOV call? 
           rf.write(alu.instr.mov.rdn, alu.instr.mov.imm);
+          //setNegativeZero(rf[alu.instr.mov.rdn],32);
+          //stats.numRegWrites += 1;
           break;
         case ALU_CMP:
           // NO rf.write, will subtract cmp.rdn - cmp.imm and update flags accordingly 
