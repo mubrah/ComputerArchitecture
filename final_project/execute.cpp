@@ -82,7 +82,7 @@ void setCarryOverflow (int num1, int num2, OFType oftype) {
       else {
         flags.V = 1;
       }
-      break;2
+      break;
     case OF_SHIFT:
       // C flag unaffected for shifts by zero
       if (num2 != 0) {
@@ -234,7 +234,7 @@ void execute() {
         case ALU_LSLI:
           // TODO: needs stats + Z, N flags
           rf.write(alu.instr.lsli.rd, rf[alu.instr.lsli.rm] << rf[alu.instr.lsli.imm]);
-          setCarryOverflow(rf[alu.instr.lsli.rm], rf[alu.instr.lsli.imm], OF_SHIFT);
+          setCarryOverflow(rf[alu.instr.lsli.rm], alu.instr.lsli.imm, OF_SHIFT);
           break;
         case ALU_ADDR:
           // TODO: needs stats + N, Z, V flags
@@ -249,7 +249,7 @@ void execute() {
         case ALU_ADD3I:
           // TODO: needs stats + N, Z, V flags
           rf.write(alu.instr.add3i.rd, rf[alu.instr.add3i.rn] + alu.instr.add3i.imm);
-          setCarryOverflow(rf[alu.instr.add3i.rn],rf[alu.instr.add3i.imm],OF_ADD);
+          setCarryOverflow(rf[alu.instr.add3i.rn],alu.instr.add3i.imm,OF_ADD);
           break;
         case ALU_SUB3I:
           // TODO: needs stats + N, Z, V flags
@@ -267,17 +267,17 @@ void execute() {
           // NO rf.write, will subtract cmp.rdn - cmp.imm and update flags accordingly 
           // In one document says to subtract the two (favorable), and in another to AddwithCarry the two's compliment
           /* TODO: Add stats and flags and test */
-          setCarryOverflow(rf[alu.instr.cmp.rdn], rf[alu.instr.cmp.imm], OF_SUB);
+          setCarryOverflow(rf[alu.instr.cmp.rdn], alu.instr.cmp.imm, OF_SUB);
           break;
         case ALU_ADD8I:
           // TODO: needs stats and flags(all except C)
           rf.write(alu.instr.add8i.rdn, rf[alu.instr.add8i.rdn] + alu.instr.add8i.imm);
-          setCarryOverflow(rf[alu.instr.add8i.rdn], rf[alu.instr.add8i.imm], OF_ADD);
+          setCarryOverflow(rf[alu.instr.add8i.rdn], alu.instr.add8i.imm, OF_ADD);
           break;
         case ALU_SUB8I:
           // TODO: needs stats and flags(all except C)
           rf.write(alu.instr.sub8i.rdn, rf[alu.instr.sub8i.rdn] - alu.instr.sub8i.imm);
-          setCarryOverflow(rf[alu.instr.sub8i.rdn], rf[alu.instr.sub8i.imm], OF_SUB);
+          setCarryOverflow(rf[alu.instr.sub8i.rdn], alu.instr.sub8i.imm, OF_SUB);
           break;
         default:
           cout << "instruction not implemented" << endl;
@@ -376,7 +376,6 @@ void execute() {
       misc_ops = decode(misc);
       switch(misc_ops) {
         case MISC_PUSH:
-
           // need to implement
           break;
         case MISC_POP:
