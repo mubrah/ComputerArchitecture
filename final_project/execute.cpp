@@ -32,7 +32,15 @@ ASPR flags;
 // one parameter as input, the result of whatever operation is executing
 
 /* 
-void setZeroFlag(int Z)
+void setZeroFlag(int Z){
+  if((unsigned long long int)Z == "00000000"){
+    flags.Z = 1;
+  }
+  else{
+    flags.Z = 0;
+  }
+}
+ 
 void setNegativeFlag(int N)
 */
 
