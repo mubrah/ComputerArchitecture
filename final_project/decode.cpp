@@ -102,7 +102,8 @@ ALU_Ops decode (const ALU_Type data) {
     return ALU_ADD3I;
   }
   else if (data.instr.sub3i.op == ALU_SUB3I_OP) {
-    // 315: insert code here to print subs instruction
+      cout << "subs r" << data.instr.sub3i.rd << ", r" << data.instr.sub3i.rn << ", #" << data.instr.sub3i.imm << endl;
+    // completed by roee
     return ALU_SUB3I;
   }
   else if (data.instr.add8i.op == ALU_ADD8I_OP) {
@@ -113,11 +114,12 @@ ALU_Ops decode (const ALU_Type data) {
     return ALU_ADD8I;
   }
   else if (data.instr.sub8i.op == ALU_SUB8I_OP) {
-    // 315: insert code here to print subs instruction
+      //completed by roee
+      cout << "subs r" << data.instr.sub8i.rdn << ", #" << setbase(10) << data.instr.sub8i.imm << endl;
     return ALU_SUB8I;
   }
   else if (data.instr.cmp.op == ALU_CMP_OP) { 
-    // complete
+    // complete register-immediate comparison
     if (opts.instrs) { 
       cout << "cmp r" << data.instr.cmp.rdn << ", #" << setbase(10) << data.instr.cmp.imm << endl;
     }
@@ -133,9 +135,10 @@ ALU_Ops decode (const ALU_Type data) {
 
 }
 
-DP_Ops decode (const DP_Type data) {
+DP_Ops decode (const DP_Type data) { 
   if (data.instr.DP_Instr.op == DP_CMP) {
-    // 315: insert code here to print cmp instruction
+    // 315: insert code here to print cmp instruction, register-register comparison
+      cout << "cmps r" << data.instr.DP_Instr.rm << ", r" << setbase(10) << data.instr.DP_Instr.rdn << endl; 
     return DP_CMP;
   }
   else {
