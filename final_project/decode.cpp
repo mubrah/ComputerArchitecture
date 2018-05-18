@@ -78,7 +78,7 @@ Thumb_Types decode (const ALL_Types data) {
 
 ALU_Ops decode (const ALU_Type data) {
   if (data.instr.lsli.op == ALU_LSLI_OP) {
-    // 315: insert code here to print lsls instruction
+     cout << "lsli r" << data.instr.lsli.rd << ", r" << data.instr.lsli.rm << ", #" << data.instr.lsli.imm << endl;
     return ALU_LSLI;
   }
   else if (data.instr.addr.op == ALU_ADDR_OP) {
@@ -88,7 +88,7 @@ ALU_Ops decode (const ALU_Type data) {
     return ALU_ADDR;
   }
   else if (data.instr.subr.op == ALU_SUBR_OP) {
-    // complete
+    // complete (by roee, hopefully correct!)
     if(opts.instrs){
       cout << "subs r" << data.instr.subr.rd << ", r" << data.instr.subr.rn << ", r" << data.instr.subr.rm << endl;
     }
