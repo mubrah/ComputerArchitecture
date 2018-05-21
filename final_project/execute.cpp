@@ -232,46 +232,42 @@ void execute() {
   // CPE 315: The bulk of your work is in the following switch statement
   // All instructions will need to have stats and cache access info added
   // as appropriate for that instruction.
+
+  // All reg-file writes and flags done, TODO: Stats
   switch(itype) {
     case ALU:
       add_ops = decode(alu);
       switch(add_ops) {
         case ALU_LSLI:
-          // TODO: needs stats + Z, N flags
           rf.write(alu.instr.lsli.rd, alu.instr.lsli.rm << alu.instr.lsli.imm);
           setCarryOverflow(rf[alu.instr.lsli.rm], rf[alu.instr.lsli.imm], OF_SHIFT);
           setNegativeFlag(alu.instr.lsli.rm << alu.instr.lsli.imm);
           setZeroFlag(alu.instr.lsli.rm << alu.instr.lsli.imm);
           break;
         case ALU_ADDR:
-          // TODO: needs stats + N, Z, V flags
           rf.write(alu.instr.addr.rd, rf[alu.instr.addr.rn] + rf[alu.instr.addr.rm]);
           setCarryOverflow(rf[alu.instr.addr.rn],rf[alu.instr.addr.rm],OF_ADD);
           setNegativeFlag(rf[alu.instr.addr.rn] + rf[alu.instr.addr.rm]);
           setZeroFlag(rf[alu.instr.addr.rn] + rf[alu.instr.addr.rm]);
           break;
         case ALU_SUBR:
-          // TODO: needs stats + N, Z, V flags
           rf.write(alu.instr.subr.rd, rf[alu.instr.subr.rn] - rf[alu.instr.subr.rm]);
           setCarryOverflow(rf[alu.instr.subr.rn],rf[alu.instr.subr.rm],OF_SUB);
           setNegativeFlag(rf[alu.instr.subr.rn] - rf[alu.instr.subr.rm]);
           setZeroFlag(rf[alu.instr.subr.rn] - rf[alu.instr.subr.rm]);
           break;
         case ALU_ADD3I:
-          // TODO: needs stats + N, Z, V flags
           rf.write(alu.instr.add3i.rd, rf[alu.instr.add3i.rn] + alu.instr.add3i.imm);
           setCarryOverflow(rf[alu.instr.add3i.rn],alu.instr.add3i.imm,OF_ADD);
           setNegativeFlag(rf[alu.instr.add3i.rn] + alu.instr.add3i.imm);
           break;
         case ALU_SUB3I:
-          // TODO: needs stats + N, Z, V flags
           rf.write(alu.instr.sub3i.rd, rf[alu.instr.sub3i.rn] - alu.instr.sub3i.imm);
           setCarryOverflow(rf[alu.instr.sub3i.rn], alu.instr.sub3i.imm ,OF_SUB);
           setNegativeFlag(rf[alu.instr.sub3i.rn] - alu.instr.sub3i.imm);
           setZeroFlag(rf[alu.instr.sub3i.rn] - alu.instr.sub3i.imm);
           break;
         case ALU_MOV:
-          // TODO: needs stats + N, Z, C flags
           rf.write(alu.instr.mov.rdn, alu.instr.mov.imm);
           setNegativeFlag(alu.instr.mov.imm);
           setCarryOverflow(rf[alu.instr.mov.rdn],alu.instr.mov.imm, OF_SUB);
@@ -279,21 +275,17 @@ void execute() {
           break;
         case ALU_CMP:
           // NO rf.write, will subtract cmp.rdn - cmp.imm and update flags accordingly 
-          // In one document says to subtract the two (favorable), and in another to AddwithCarry the two's compliment
-          /* TODO: Add stats and flags and test */
           setCarryOverflow(rf[alu.instr.cmp.rdn], alu.instr.cmp.imm, OF_SUB);
           setNegativeFlag(rf[alu.instr.cmp.rdn] - rf[alu.instr.cmp.imm]);
           setZeroFlag(rf[alu.instr.cmp.rdn] - rf[alu.instr.cmp.imm]);
           break;
         case ALU_ADD8I:
-          // TODO: needs stats and flags(all except C)
           rf.write(alu.instr.add8i.rdn, rf[alu.instr.add8i.rdn] + alu.instr.add8i.imm);
           setCarryOverflow(rf[alu.instr.add8i.rdn], alu.instr.add8i.imm, OF_ADD);
           setNegativeFlag(rf[alu.instr.add8i.rdn] + alu.instr.add8i.imm);
           setZeroFlag(rf[alu.instr.add8i.rdn] + alu.instr.add8i.imm);
           break;
         case ALU_SUB8I:
-          // TODO: needs stats and flags(all except C)
           rf.write(alu.instr.sub8i.rdn, rf[alu.instr.sub8i.rdn] - alu.instr.sub8i.imm);
           setCarryOverflow(rf[alu.instr.sub8i.rdn], alu.instr.sub8i.imm, OF_SUB);
           setNegativeFlag(rf[alu.instr.sub8i.rdn] - alu.instr.sub8i.imm);
@@ -373,7 +365,6 @@ void execute() {
           rf.write(ld_st.instr.ld_st_imm.rt, dmem[addr]);
           break;
         case STRR:
-          // Roee wrote here, unsure if right?
            addr = rf[ld_st.instr.ld_st_reg.rn] + rf[ld_st.instr.ld_st_reg.rm];
            dmem.write(addr, rf[ld_st.instr.ld_st_reg.rt]);
           break;

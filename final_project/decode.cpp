@@ -78,7 +78,7 @@ Thumb_Types decode (const ALL_Types data) {
 
 ALU_Ops decode (const ALU_Type data) {
   if (data.instr.lsli.op == ALU_LSLI_OP) {
-     cout << "lsli r" << data.instr.lsli.rd << ", r" << data.instr.lsli.rm << ", #" << data.instr.lsli.imm << endl;
+     cout << "lsls r" << data.instr.lsli.rd << ", r" << data.instr.lsli.rm << ", #" << data.instr.lsli.imm << endl;
     return ALU_LSLI;
   }
   else if (data.instr.addr.op == ALU_ADDR_OP) {
@@ -138,7 +138,7 @@ ALU_Ops decode (const ALU_Type data) {
 DP_Ops decode (const DP_Type data) { 
   if (data.instr.DP_Instr.op == DP_CMP) {
     // 315: insert code here to print cmp instruction, register-register comparison
-      cout << "cmps r" << data.instr.DP_Instr.rm << ", r" << setbase(10) << data.instr.DP_Instr.rdn << endl; 
+      cout << "cmps r" << data.instr.DP_Instr.rdn << ", r" << setbase(10) << data.instr.DP_Instr.rm << endl; 
     return DP_CMP;
   }
   else {
