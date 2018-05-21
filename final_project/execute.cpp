@@ -32,16 +32,16 @@ ASPR flags;
 // one parameter as input, the result of whatever operation is executing
 
  
-void setZeroFlag(int Z){
-  if(z == 0){
+void setZeroFlag(int result){
+  if(result == 0){
     flags.Z = 1;
   } else {
     flags.Z = 0;
   }
 }
 
-void setNegativeFlag(int N){
-  if(N < 0){
+void setNegativeFlag(int result){
+  if(result < 0){
     flags.N = 1;
   } else { 
     flags.N = 0; 
@@ -238,34 +238,43 @@ void execute() {
       switch(add_ops) {
         case ALU_LSLI:
           // TODO: needs stats + Z, N flags
-          rf.write(alu.instr.lsli.rd, rf[alu.instr.lsli.rm] << rf[alu.instr.lsli.imm]);
-          setCarryOverflow(rf[alu.instr.lsli.rm], alu.instr.lsli.imm, OF_SHIFT);
+          rf.write(alu.instr.lsli.rd, alu.instr.lsli.rm << alu.instr.lsli.imm);
+          setCarryOverflow(rf[alu.instr.lsli.rm], rf[alu.instr.lsli.imm], OF_SHIFT);
+          setNegativeFlag(alu.instr.lsli.rm << alu.instr.lsli.imm);
+          setZeroFlag(alu.instr.lsli.rm << alu.instr.lsli.imm);
           break;
         case ALU_ADDR:
           // TODO: needs stats + N, Z, V flags
           rf.write(alu.instr.addr.rd, rf[alu.instr.addr.rn] + rf[alu.instr.addr.rm]);
           setCarryOverflow(rf[alu.instr.addr.rn],rf[alu.instr.addr.rm],OF_ADD);
+          setNegativeFlag(rf[alu.instr.addr.rn] + rf[alu.instr.addr.rm]);
+          setZeroFlag(rf[alu.instr.addr.rn] + rf[alu.instr.addr.rm]);
           break;
         case ALU_SUBR:
           // TODO: needs stats + N, Z, V flags
           rf.write(alu.instr.subr.rd, rf[alu.instr.subr.rn] - rf[alu.instr.subr.rm]);
           setCarryOverflow(rf[alu.instr.subr.rn],rf[alu.instr.subr.rm],OF_SUB);
+          setNegativeFlag(rf[alu.instr.subr.rn] - rf[alu.instr.subr.rm]);
+          setZeroFlag(rf[alu.instr.subr.rn] - rf[alu.instr.subr.rm]);
           break;
         case ALU_ADD3I:
           // TODO: needs stats + N, Z, V flags
           rf.write(alu.instr.add3i.rd, rf[alu.instr.add3i.rn] + alu.instr.add3i.imm);
           setCarryOverflow(rf[alu.instr.add3i.rn],alu.instr.add3i.imm,OF_ADD);
+          setNegativeFlag(rf[alu.instr.add3i.rn] + alu.instr.add3i.imm);
           break;
         case ALU_SUB3I:
           // TODO: needs stats + N, Z, V flags
           rf.write(alu.instr.sub3i.rd, rf[alu.instr.sub3i.rn] - alu.instr.sub3i.imm);
-          setCarryOverflow(rf[alu.instr.sub3i.rn], alu.instr.sub3i.imm ,OF_SUB); //Changed here the second paramteter 
+          setCarryOverflow(rf[alu.instr.sub3i.rn], alu.instr.sub3i.imm ,OF_SUB);
+          setNegativeFlag(rf[alu.instr.sub3i.rn] - alu.instr.sub3i.imm);
+          setZeroFlag(rf[alu.instr.sub3i.rn] - alu.instr.sub3i.imm);
           break;
         case ALU_MOV:
           // TODO: needs stats + N, Z, C flags
-          // Why would you need to set flags on a MOV call? 
           rf.write(alu.instr.mov.rdn, alu.instr.mov.imm);
-          //setNegativeZero(rf[alu.instr.mov.rdn],32);
+          setNegativeFlag(alu.instr.mov.imm);
+          setCarryOverflow(rf[alu.instr.mov.rdn],alu.instr.mov.imm, OF_SUB);
           //stats.numRegWrites += 1;
           break;
         case ALU_CMP:
@@ -273,16 +282,22 @@ void execute() {
           // In one document says to subtract the two (favorable), and in another to AddwithCarry the two's compliment
           /* TODO: Add stats and flags and test */
           setCarryOverflow(rf[alu.instr.cmp.rdn], alu.instr.cmp.imm, OF_SUB);
+          setNegativeFlag(rf[alu.instr.cmp.rdn] - rf[alu.instr.cmp.imm]);
+          setZeroFlag(rf[alu.instr.cmp.rdn] - rf[alu.instr.cmp.imm]);
           break;
         case ALU_ADD8I:
           // TODO: needs stats and flags(all except C)
           rf.write(alu.instr.add8i.rdn, rf[alu.instr.add8i.rdn] + alu.instr.add8i.imm);
           setCarryOverflow(rf[alu.instr.add8i.rdn], alu.instr.add8i.imm, OF_ADD);
+          setNegativeFlag(rf[alu.instr.add8i.rdn] + alu.instr.add8i.imm);
+          setZeroFlag(rf[alu.instr.add8i.rdn] + alu.instr.add8i.imm);
           break;
         case ALU_SUB8I:
           // TODO: needs stats and flags(all except C)
           rf.write(alu.instr.sub8i.rdn, rf[alu.instr.sub8i.rdn] - alu.instr.sub8i.imm);
           setCarryOverflow(rf[alu.instr.sub8i.rdn], alu.instr.sub8i.imm, OF_SUB);
+          setNegativeFlag(rf[alu.instr.sub8i.rdn] - alu.instr.sub8i.imm);
+          setZeroFlag(rf[alu.instr.sub8i.rdn] - alu.instr.sub8i.imm);
           break;
         default:
           cout << "instruction not implemented" << endl;
