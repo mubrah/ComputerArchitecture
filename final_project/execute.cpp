@@ -31,18 +31,23 @@ ASPR flags;
 // flags for each instruction that does that. It only needs to take
 // one parameter as input, the result of whatever operation is executing
 
-/* 
+ 
 void setZeroFlag(int Z){
-  if((unsigned long long int)Z == "00000000"){
+  if(z == 0){
     flags.Z = 1;
-  }
-  else{
+  } else {
     flags.Z = 0;
   }
 }
 
-void setNegativeFlag(int N)
-*/
+void setNegativeFlag(int N){
+  if(N < 0){
+    flags.N = 1;
+  } else { 
+    flags.N = 0; 
+  }
+}
+
 
 // This function is complete, you should not have to modify it
 void setCarryOverflow (int num1, int num2, OFType oftype) {
