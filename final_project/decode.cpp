@@ -132,7 +132,6 @@ ALU_Ops decode (const ALU_Type data) {
     }
     return ALU_MOV;
   }
-
 }
 
 DP_Ops decode (const DP_Type data) { 
