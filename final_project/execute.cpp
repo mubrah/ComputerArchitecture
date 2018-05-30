@@ -343,7 +343,10 @@ void execute() {
       dp_ops = decode(dp);
       switch(dp_ops) {
         case DP_CMP:
-          // need to implement
+          // TODO: Stats
+          setCarryOverflow(rf[dp.instr.DP_Instr.rdn], dp.instr.DP_Instr.rm, OF_SUB);
+          setZeroFlag(rf[dp.instr.DP_Instr.rdn] - dp.instr.DP_Instr.rm);
+          setNegativeFlag(rf[dp.instr.DP_Instr.rdn] - dp.instr.DP_Instr.rm);
           break;
       }
       break;
@@ -351,8 +354,10 @@ void execute() {
       sp_ops = decode(sp);
       switch(sp_ops) {
         case SP_MOV:
-          // needs stats and flags
+          // TODO: Stats
           rf.write((sp.instr.mov.d << 3 ) | sp.instr.mov.rd, rf[sp.instr.mov.rm]);
+          setNegativeFlag(rf[sp.instr.mov.rm]);
+          setZeroFlag(rf[sp.instr.mov.rm]);
           break;
         case SP_ADD:
         case SP_CMP:
@@ -435,7 +440,6 @@ void execute() {
           }
 
           rf.write(SP_REG, SP + BitCount * 4);
-
           break;
         case MISC_SUB:
           // functionally complete, needs stats
@@ -459,7 +463,9 @@ void execute() {
     case UNCOND:
       // Essentially the same as the conditional branches, but with no
       // condition check, and an 11-bit immediate field
+      // TODO: Stats
       decode(uncond);
+      rf.write(PC_REG, PC + 2 * signExtend8to32ui(uncond.instr.b.imm) + 2);
       break;
     case LDM:
       decode(ldm);
