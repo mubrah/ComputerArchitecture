@@ -250,10 +250,10 @@ void execute() {
       add_ops = decode(alu);
       switch(add_ops) {
         case ALU_LSLI:
-          rf.write(alu.instr.lsli.rd, alu.instr.lsli.rm << alu.instr.lsli.imm);
-          setCarryOverflow(rf[alu.instr.lsli.rm], rf[alu.instr.lsli.imm], OF_SHIFT);
-          setNegativeFlag(alu.instr.lsli.rm << alu.instr.lsli.imm);
-          setZeroFlag(alu.instr.lsli.rm << alu.instr.lsli.imm);
+          rf.write(alu.instr.lsli.rd, rf[alu.instr.lsli.rm] << alu.instr.lsli.imm);
+          setCarryOverflow(rf[alu.instr.lsli.rm], alu.instr.lsli.imm, OF_SHIFT);
+          setNegativeFlag(rf[alu.instr.lsli.rm] << alu.instr.lsli.imm);
+          setZeroFlag(rf[alu.instr.lsli.rm] << alu.instr.lsli.imm);
           break;
         case ALU_ADDR:
           rf.write(alu.instr.addr.rd, rf[alu.instr.addr.rn] + rf[alu.instr.addr.rm]);
@@ -281,14 +281,15 @@ void execute() {
         case ALU_MOV:
           rf.write(alu.instr.mov.rdn, alu.instr.mov.imm);
           setNegativeFlag(alu.instr.mov.imm);
+          flags.C = 0; //manual set of zero 
           setCarryOverflow(rf[alu.instr.mov.rdn],alu.instr.mov.imm, OF_SUB);
           //stats.numRegWrites += 1;
           break;
         case ALU_CMP:
           // NO rf.write, will subtract cmp.rdn - cmp.imm and update flags accordingly 
           setCarryOverflow(rf[alu.instr.cmp.rdn], alu.instr.cmp.imm, OF_SUB);
-          setNegativeFlag(rf[alu.instr.cmp.rdn] - rf[alu.instr.cmp.imm]);
-          setZeroFlag(rf[alu.instr.cmp.rdn] - rf[alu.instr.cmp.imm]);
+          setNegativeFlag(rf[alu.instr.cmp.rdn] - alu.instr.cmp.imm);
+          setZeroFlag(rf[alu.instr.cmp.rdn] - alu.instr.cmp.imm);
           break;
         case ALU_ADD8I:
           rf.write(alu.instr.add8i.rdn, rf[alu.instr.add8i.rdn] + alu.instr.add8i.imm);
