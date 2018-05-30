@@ -400,9 +400,28 @@ void execute() {
       misc_ops = decode(misc);
       switch(misc_ops) {
         case MISC_PUSH:
-          // need to implement
+          /* TODO: Stats and Cache */
+         int bitCount = countBits(misc.instr.push.reg_list) + misc.instr.push.m;
+
+          int addr = SP - 4 * bitCount;
+
+          for (unsigned int i = 0; i < 8; i++) {
+             if ((misc.instr.push.reg_list >> i) & 1) {
+                dmem.write(addr, rf[i]);
+                addr += 4;
+             }            
+          }
+
+          /* Write to PC register if the m bit is set */
+          if (misc.instr.push.m) {
+             dmem.write(addr, LR);
+          }
+
+          SP = SP - 4 * bitCount;
+
           break;
         case MISC_POP:
+          /* TODO: Stats and Cache */
           int bitCount = countBits(misc.instr.pop.reg_list) + misc.instr.pop.m;
 
           int addr = SP;
@@ -415,7 +434,7 @@ void execute() {
           }
 
           /* Write to PC register if the m bit is set */
-          if (misc.instr.pop.reg_list.m) {
+          if (misc.instr.pop.m) {
              rf.write(PC_REG, dmem[addr]);
           }
 
