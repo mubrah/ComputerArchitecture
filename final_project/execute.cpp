@@ -48,10 +48,11 @@ void setNegativeFlag(int result){
   }
 }
 
-static countBits(int8_t word) {
+static int countBits(unsigned short word) {
    int count = 0;
+   unsigned int i;
 
-   for (i = 0; i < 8) {
+   for (i = 0; i < 8; i++) {
       count += (word >> i) & 1;
    }
 
@@ -401,30 +402,25 @@ void execute() {
       switch(misc_ops) {
         case MISC_PUSH:
           /* TODO: Stats and Cache */
-         int bitCount = countBits(misc.instr.push.reg_list) + misc.instr.push.m;
-
-          int addr = SP - 4 * bitCount;
-
+          BitCount = countBits(misc.instr.push.reg_list) + misc.instr.push.m;
+          addr = SP - 4 * BitCount;
           for (unsigned int i = 0; i < 8; i++) {
              if ((misc.instr.push.reg_list >> i) & 1) {
                 dmem.write(addr, rf[i]);
                 addr += 4;
              }            
           }
-
           /* Write to PC register if the m bit is set */
           if (misc.instr.push.m) {
              dmem.write(addr, LR);
           }
 
-          SP = SP - 4 * bitCount;
-
+          rf.write(SP_REG, SP - BitCount * 4);
           break;
         case MISC_POP:
           /* TODO: Stats and Cache */
-          int bitCount = countBits(misc.instr.pop.reg_list) + misc.instr.pop.m;
-
-          int addr = SP;
+          BitCount = countBits(misc.instr.pop.reg_list) + misc.instr.pop.m;
+          addr = SP;
 
           for (unsigned int i = 0; i < 8; i++) {
              if ((misc.instr.pop.reg_list >> i) & 1) {
@@ -438,7 +434,7 @@ void execute() {
              rf.write(PC_REG, dmem[addr]);
           }
 
-          rf.write(SP_REG, SP + bitCount * 4);
+          rf.write(SP_REG, SP + BitCount * 4);
 
           break;
         case MISC_SUB:
