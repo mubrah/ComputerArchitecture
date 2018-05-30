@@ -48,6 +48,16 @@ void setNegativeFlag(int result){
   }
 }
 
+static countBits(int8_t word) {
+   int count = 0;
+
+   for (i = 0; i < 8) {
+      count += (word >> i) & 1;
+   }
+
+   return count;
+}
+
 
 // This function is complete, you should not have to modify it
 void setCarryOverflow (int num1, int num2, OFType oftype) {
@@ -393,7 +403,24 @@ void execute() {
           // need to implement
           break;
         case MISC_POP:
-          // need to implement
+          int bitCount = countBits(misc.instr.pop.reg_list) + misc.instr.pop.m;
+
+          int addr = SP;
+
+          for (unsigned int i = 0; i < 8; i++) {
+             if ((misc.instr.pop.reg_list >> i) & 1) {
+                rf.write(i, dmem[addr]);
+                addr += 4;
+             }            
+          }
+
+          /* Write to PC register if the m bit is set */
+          if (misc.instr.pop.reg_list.m) {
+             rf.write(PC_REG, dmem[addr]);
+          }
+
+          rf.write(SP_REG, SP + bitCount * 4);
+
           break;
         case MISC_SUB:
           // functionally complete, needs stats
