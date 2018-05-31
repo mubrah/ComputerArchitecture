@@ -478,6 +478,21 @@ void execute() {
       break;
     case LDM:
       decode(ldm);
+      
+      BitCount = countBits(ldm.instr.ldm.reg_list);
+      addr = rf[ldm.instr.ldm.rn];
+
+      for (unsigned int i = 0; i < 8; i++) {
+         if ((ldm.instr.ldm.reg_list >> i) & 1) {
+            rf.write(i, dmem[addr]);
+            addr += 4;
+         }            
+      }
+
+      /* TODO: Fill out the if body */
+      if (1) {
+         rf.write(ldm.instr.ldm.rn, rf[ldm.instr.lsm.rn] + BitCount * 4);
+      }
       // need to implement
       break;
     case STM:
