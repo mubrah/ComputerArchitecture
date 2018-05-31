@@ -109,7 +109,23 @@ void Memory<Data32, Data32>::dump(DataType dt) const {
 // cache size in blocks). You should also update the "hits" and
 // "misses" counters.
 bool Cache::access(unsigned int address) {
-  return false;
+    unsigned int i;
+
+    /* TODO: Figure out what blocksize is for */
+
+    /* Loop through the entries and check if they are the same */
+    for (i = 0; i < size; i++) {
+       if (entries[i] == address) {
+          hits++;
+          return true;
+       }
+    }
+
+    /* At this point, it's definitely a miss */
+    entries[i] = address;
+
+    misses++;
+    return false;
 }
 
 void Stats::print() {
