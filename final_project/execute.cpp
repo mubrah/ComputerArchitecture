@@ -32,20 +32,28 @@ ASPR flags;
 // one parameter as input, the result of whatever operation is executing
 
  
-void setZeroFlag(int result){
-  if(result == 0){
-    flags.Z = 1;
-  } else {
-    flags.Z = 0;
-  }
+static void setZeroFlag(int result) {
+   flags.Z = result == 0 ? 1 : 0;
+
+   /*
+   if (result == 0) {
+      flags.Z = 1;
+   } else {
+      flags.Z = 0;
+   }
+   */
 }
 
-void setNegativeFlag(int result){
-  if(result < 0){
-    flags.N = 1;
-  } else { 
-    flags.N = 0; 
-  }
+static void setNegativeFlag(int result) {
+   flags.N = result < 0 ? 1 : 0;
+    
+   /*
+   if (result < 0) {
+      flags.N = 1;
+   } else { 
+      flags.N = 0; 
+   }
+   */
 }
 
 static int countBits(unsigned short word) {
