@@ -383,19 +383,23 @@ void execute() {
           // functionally complete, needs stats
           addr = rf[ld_st.instr.ld_st_imm.rn] + ld_st.instr.ld_st_imm.imm * 4;
           dmem.write(addr, rf[ld_st.instr.ld_st_imm.rt]);
+          caches.access(addr);
           break;
         case LDRI:
           // functionally complete, needs stats
           addr = rf[ld_st.instr.ld_st_imm.rn] + ld_st.instr.ld_st_imm.imm * 4;
           rf.write(ld_st.instr.ld_st_imm.rt, dmem[addr]);
+          caches.access(addr);
           break;
         case STRR:
            addr = rf[ld_st.instr.ld_st_reg.rn] + rf[ld_st.instr.ld_st_reg.rm];
            dmem.write(addr, rf[ld_st.instr.ld_st_reg.rt]);
+           caches.access(addr);
           break;
         case LDRR:
            addr = rf[ld_st.instr.ld_st_reg.rn] + rf[ld_st.instr.ld_st_reg.rm];
            rf.write(ld_st.instr.ld_st_reg.rt, dmem[addr]);
+           caches.access(addr);
           break;
         case STRBI:
           // need to implement
@@ -421,12 +425,14 @@ void execute() {
           for (i = 0; i < 8; i++) {
              if ((misc.instr.push.reg_list >> i) & 1) {
                 dmem.write(addr, rf[i]);
+                caches.access(addr);
                 addr += 4;
              }            
           }
           /* Write to PC register if the m bit is set */
           if (misc.instr.push.m) {
              dmem.write(addr, LR);
+             caches.access(addr);
           }
 
           rf.write(SP_REG, SP - BitCount * 4);
@@ -439,6 +445,7 @@ void execute() {
           for (i = 0; i < 8; i++) {
              if ((misc.instr.pop.reg_list >> i) & 1) {
                 rf.write(i, dmem[addr]);
+                caches.access(addr);
                 addr += 4;
              }            
           }
@@ -446,6 +453,7 @@ void execute() {
           /* Write to PC register if the m bit is set */
           if (misc.instr.pop.m) {
              rf.write(PC_REG, dmem[addr]);
+             caches.access(addr);
           }
 
           rf.write(SP_REG, SP + BitCount * 4);
@@ -485,6 +493,7 @@ void execute() {
       for (i = 0; i < 8; i++) {
          if ((ldm.instr.ldm.reg_list >> i) & 1) {
             rf.write(i, dmem[addr]);
+            caches.access(addr);
             addr += 4;
          }            
       }
@@ -506,6 +515,7 @@ void execute() {
       for (i = 0; i < 8; i++) {
          if ((stm.instr.stm.reg_list >> i) & 1) {
             dmem.write(addr, rf[i]);
+            caches.access(addr);
             addr += 4;
          }            
       }
