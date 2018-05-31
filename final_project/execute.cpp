@@ -418,7 +418,7 @@ void execute() {
           /* TODO: Stats and Cache */
           BitCount = countBits(misc.instr.push.reg_list) + misc.instr.push.m;
           addr = SP - 4 * BitCount;
-          for (unsigned int i = 0; i < 8; i++) {
+          for (i = 0; i < 8; i++) {
              if ((misc.instr.push.reg_list >> i) & 1) {
                 dmem.write(addr, rf[i]);
                 addr += 4;
@@ -436,7 +436,7 @@ void execute() {
           BitCount = countBits(misc.instr.pop.reg_list) + misc.instr.pop.m;
           addr = SP;
 
-          for (unsigned int i = 0; i < 8; i++) {
+          for (i = 0; i < 8; i++) {
              if ((misc.instr.pop.reg_list >> i) & 1) {
                 rf.write(i, dmem[addr]);
                 addr += 4;
@@ -482,7 +482,7 @@ void execute() {
       BitCount = countBits(ldm.instr.ldm.reg_list);
       addr = rf[ldm.instr.ldm.rn];
 
-      for (unsigned int i = 0; i < 8; i++) {
+      for (i = 0; i < 8; i++) {
          if ((ldm.instr.ldm.reg_list >> i) & 1) {
             rf.write(i, dmem[addr]);
             addr += 4;
@@ -491,7 +491,7 @@ void execute() {
 
       /* TODO: Fill out the if body */
       if (1) {
-         rf.write(ldm.instr.ldm.rn, rf[ldm.instr.lsm.rn] + BitCount * 4);
+         rf.write(ldm.instr.ldm.rn, rf[ldm.instr.ldm.rn] + BitCount * 4);
       }
       // need to implement
       break;
