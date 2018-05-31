@@ -481,8 +481,21 @@ void execute() {
       // need to implement
       break;
     case STM:
+      /* TODO: Stats and cache */
+      
       decode(stm);
-      // need to implement
+      
+      BitCount = countBits(stm.instr.stm.reg_list);
+      addr = rf[stm.instr.stm.rn];
+      
+      for (i = 0; i < 8; i++) {
+         if ((stm.instr.stm.reg_list >> i) & 1) {
+            dmem.write(addr, rf[i]);
+            addr += 4;
+         }            
+      }
+
+      rf.write(stm.instr.stm.rn, rf[stm.instr.stm.rn] + BitCount * 4);
       break;
     case LDRL:
       // This instruction is complete, nothing needed
