@@ -251,8 +251,6 @@ void execute() {
   // CPE 315: The bulk of your work is in the following switch statement
   // All instructions will need to have stats and cache access info added
   // as appropriate for that instruction.
-
-  // All reg-file writes and flags done, TODO: Stats
   switch(itype) {
     case ALU:
       add_ops = decode(alu);
@@ -371,21 +369,32 @@ void execute() {
           setCarryOverflow(rf[dp.instr.DP_Instr.rdn], dp.instr.DP_Instr.rm, OF_SUB);
           setZeroFlag(rf[dp.instr.DP_Instr.rdn] - dp.instr.DP_Instr.rm);
           setNegativeFlag(rf[dp.instr.DP_Instr.rdn] - dp.instr.DP_Instr.rm);
+          stats.numRegReads += 2;
           break;
       }
       break;
-    case SPECIAL:
+    case SPECIAL: //Done 
       sp_ops = decode(sp);
       switch(sp_ops) {
         case SP_MOV:
-          // TODO: Stats
           rf.write((sp.instr.mov.d << 3 ) | sp.instr.mov.rd, rf[sp.instr.mov.rm]);
           setNegativeFlag(rf[sp.instr.mov.rm]);
           setZeroFlag(rf[sp.instr.mov.rm]);
+          stats.numRegWrites++;
+          stats.numRegReads++;
           break;
         case SP_ADD:
+          setZeroFlag(rf[(sp.instr.add.d << 3 ) | sp.instr.add.rd] + rf[sp.instr.add.rm]);
+          setNegativeFlag(rf[(sp.instr.add.d << 3 ) | sp.instr.add.rd] + rf[sp.instr.add.rm]);
+          setCarryOverflow(rf[(sp.instr.add.d << 3 ) | sp.instr.add.rd], rf[sp.instr.add.rm], OF_ADD);
+          rf.write((sp.instr.add.d << 3 ) | sp.instr.add.rd, rf[(sp.instr.add.d << 3 ) | sp.instr.add.rd] + rf[sp.instr.add.rm]);
+          stats.numRegWrites++;
+          stats.numRegReads += 2;
         case SP_CMP:
-          // need to implement these
+          setZeroFlag(rf[(sp.instr.cmp.d << 3 ) | sp.instr.cmp.rd] - rf[sp.instr.cmp.rm]);
+          setNegativeFlag(rf[(sp.instr.cmp.d << 3 ) | sp.instr.cmp.rd] - rf[sp.instr.cmp.rm]);
+          setCarryOverflow(rf[(sp.instr.cmp.d << 3 ) | sp.instr.cmp.rd], rf[sp.instr.cmp.rm], OF_SUB);
+          stats.numRegReads += 2;
           break;
       }
       break;
@@ -399,22 +408,32 @@ void execute() {
           addr = rf[ld_st.instr.ld_st_imm.rn] + ld_st.instr.ld_st_imm.imm * 4;
           dmem.write(addr, rf[ld_st.instr.ld_st_imm.rt]);
           caches.access(addr);
+          stats.numRegReads += 2;
+          stats.numMemWrites++;
           break;
         case LDRI:
           // functionally complete, needs stats
           addr = rf[ld_st.instr.ld_st_imm.rn] + ld_st.instr.ld_st_imm.imm * 4;
           rf.write(ld_st.instr.ld_st_imm.rt, dmem[addr]);
           caches.access(addr);
+          stats.numMemReads++;
+          stats.numRegReads++;
+          stats.numRegWrites++;
           break;
         case STRR:
            addr = rf[ld_st.instr.ld_st_reg.rn] + rf[ld_st.instr.ld_st_reg.rm];
            dmem.write(addr, rf[ld_st.instr.ld_st_reg.rt]);
            caches.access(addr);
+           stats.numMemWrites++;
+           stats.numRegReads += 3;
           break;
         case LDRR:
            addr = rf[ld_st.instr.ld_st_reg.rn] + rf[ld_st.instr.ld_st_reg.rm];
            rf.write(ld_st.instr.ld_st_reg.rt, dmem[addr]);
            caches.access(addr);
+           stats.numRegReads++;
+           stats.numRegReads += 2;
+           stats.numRegWrites++;
           break;
         case STRBI:
           // need to implement
