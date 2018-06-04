@@ -535,7 +535,7 @@ void execute() {
       /* I dont understand the given branch offset and why we mutliply by 2. Once that is figured, I believe that branches forward/backward can be figured too */
 
       stats.numRegReads++;
-      stats.numRegWrites++; //SP update
+      stats.numRegWrites++; //PC update
 
       break;
     case UNCOND:
@@ -545,7 +545,7 @@ void execute() {
       decode(uncond);
       rf.write(PC_REG, PC + 2 * signExtend11to32ui(uncond.instr.b.imm) + 2);
       stats.numRegReads++;
-      stats.numRegWrites++; //SP update
+      stats.numRegWrites++; //PC update
       break;
     case LDM:
       decode(ldm);
@@ -607,9 +607,10 @@ void execute() {
       stats.numMemReads++;
       break;
     case ADD_SP:
-      // needs stats
       decode(addsp);
       rf.write(addsp.instr.add.rd, SP + (addsp.instr.add.imm*4));
+      stats.numRegReads++;
+      stats.numRegWrites++; 
       break;
     default:
       cout << "[ERROR] Unknown Instruction to be executed" << endl;
