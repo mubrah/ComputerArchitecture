@@ -110,12 +110,17 @@ void Memory<Data32, Data32>::dump(DataType dt) const {
 // "misses" counters.
 bool Cache::access(unsigned int address) {
     unsigned int i;
+    double index;
+    double byte_select;
+    double tag;
 
-    /* TODO: Figure out what blocksize is for */
+    index = log2(blocksize);
+    byte_select = log2(blocks);
+    tag = address - (index + byte_select);
 
     /* Loop through the entries and check if they are the same */
     for (i = 0; i < size; i++) {
-       if (entries[i] == address) {
+       if (entries[i] == tag) {
           hits++;
           return true;
        }
