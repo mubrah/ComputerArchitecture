@@ -23,6 +23,16 @@ unsigned int signExtend8to32ui(char i) {
   return static_cast<unsigned int>(static_cast<int>(i));
 }
 
+unsigned int signExtend11to32ui(short i) {
+    if (i & 0x0800) {
+        i |= 0xF000;
+    } else {
+        i &= 0x0FFF;
+    }
+    
+    return static_cast<unsigned int>(static_cast<int>(i));
+}
+
 // This is the global object you'll use to store condition codes N,Z,V,C
 // Set these bits appropriately in execute below.
 ASPR flags;
@@ -516,7 +526,7 @@ void execute() {
       // condition check, and an 11-bit immediate field
       // TODO: Stats
       decode(uncond);
-      rf.write(PC_REG, PC + 2 * signExtend8to32ui(uncond.instr.b.imm) + 2);
+      rf.write(PC_REG, PC + 2 * signExtend11to32ui(uncond.instr.b.imm) + 2);
       break;
     case LDM:
       decode(ldm);
