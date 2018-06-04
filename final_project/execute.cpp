@@ -463,7 +463,7 @@ void execute() {
       misc_ops = decode(misc);
       switch(misc_ops) {
         case MISC_PUSH:
-          /* TODO: Stats and Cache */
+          /* TODO: Cache */
           BitCount = countBits(misc.instr.push.reg_list) + misc.instr.push.m;
           addr = SP - 4 * BitCount;
           for (i = 0; i < 8; i++) {
@@ -486,7 +486,7 @@ void execute() {
 
           break;
         case MISC_POP:
-          /* TODO: Stats and Cache */
+          /* TODO: Cache */
           BitCount = countBits(misc.instr.pop.reg_list) + misc.instr.pop.m;
           addr = SP;
 
@@ -510,12 +510,14 @@ void execute() {
           stats.numRegWrites += BitCount + 1; 
           break;
         case MISC_SUB:
-          // functionally complete, needs stats
           rf.write(SP_REG, SP - (misc.instr.sub.imm*4));
+          stats.numRegWrites++;
+          stats.numRegReads++;
           break;
         case MISC_ADD:
-          // functionally complete, needs stats
           rf.write(SP_REG, SP + (misc.instr.add.imm*4));
+          stats.numRegWrites++;
+          stats.numRegReads++;
           break;
       }
       break;
@@ -524,9 +526,17 @@ void execute() {
       // Once you've completed the checkCondition function,
       // this should work for all your conditional branches.
       // needs stats
+      branchOffset = 2 * signExtend8to32ui(cond.instr.b.imm) + 2;
+      statOffset = branchOffset - 2;
+
       if (checkCondition(cond.instr.b.cond)){
-        rf.write(PC_REG, PC + 2 * signExtend8to32ui(cond.instr.b.imm) + 2);
+        rf.write(PC_REG, PC + branchOffset);
       }
+      /* I dont understand the given branch offset and why we mutliply by 2. Once that is figured, I believe that branches forward/backward can be figured too */
+
+      stats.numRegReads++;
+      stats.numRegWrites++; //SP update
+
       break;
     case UNCOND:
       // Essentially the same as the conditional branches, but with no
@@ -534,6 +544,8 @@ void execute() {
       // TODO: Stats
       decode(uncond);
       rf.write(PC_REG, PC + 2 * signExtend11to32ui(uncond.instr.b.imm) + 2);
+      stats.numRegReads++;
+      stats.numRegWrites++; //SP update
       break;
     case LDM:
       decode(ldm);
