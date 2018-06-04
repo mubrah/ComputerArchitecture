@@ -374,8 +374,7 @@ void execute() {
     case DP:
       dp_ops = decode(dp);
       switch(dp_ops) {
-        case DP_CMP:
-          // TODO: Stats
+        case DP_CMP: //done
           setCarryOverflow(rf[dp.instr.DP_Instr.rdn], dp.instr.DP_Instr.rm, OF_SUB);
           setZeroFlag(rf[dp.instr.DP_Instr.rdn] - dp.instr.DP_Instr.rm);
           setNegativeFlag(rf[dp.instr.DP_Instr.rdn] - dp.instr.DP_Instr.rm);
@@ -548,6 +547,7 @@ void execute() {
       stats.numRegWrites++; //PC update
       break;
     case LDM:
+      /* TODO: Cache? */
       decode(ldm);
       
       BitCount = countBits(ldm.instr.ldm.reg_list);
@@ -561,17 +561,14 @@ void execute() {
          }            
       }
 
-      /* TODO: Fill out the if body */
-      if (1) {
-         rf.write(ldm.instr.ldm.rn, rf[ldm.instr.ldm.rn] + BitCount * 4);
-      }
-      // need to implement
+      rf.write(ldm.instr.stm.rn, rf[ldm.instr.ldm.rn] + BitCount * 4);
+      stats.numMemReads += BitCount;
+      stats.numRegWrites += BitCount + 1;
+      stats.numRegReads++;
       break;
     case STM:
-      /* TODO: Stats and cache */
-      
+      /* TODO: cache */
       decode(stm);
-      
       BitCount = countBits(stm.instr.stm.reg_list);
       addr = rf[stm.instr.stm.rn];
       
@@ -584,6 +581,9 @@ void execute() {
       }
 
       rf.write(stm.instr.stm.rn, rf[stm.instr.stm.rn] + BitCount * 4);
+      stats.numMemWrites += BitCount;
+      stats.numRegReads += BitCount + 1;
+      stats.numRegWrites++;
       break;
     case LDRL:
       // This instruction is complete, nothing needed
@@ -607,6 +607,7 @@ void execute() {
       stats.numMemReads++;
       break;
     case ADD_SP:
+      // complete
       decode(addsp);
       rf.write(addsp.instr.add.rd, SP + (addsp.instr.add.imm*4));
       stats.numRegReads++;
