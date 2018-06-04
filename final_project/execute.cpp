@@ -480,6 +480,10 @@ void execute() {
           }
 
           rf.write(SP_REG, SP - BitCount * 4);
+          stats.numMemWrites += BitCount; 
+          stats.numRegReads += BitCount + 1; // Plus one because need to read SP each time push called
+          stats.numRegWrites++; //Updating stack pointer
+
           break;
         case MISC_POP:
           /* TODO: Stats and Cache */
@@ -501,6 +505,9 @@ void execute() {
           }
 
           rf.write(SP_REG, SP + BitCount * 4);
+          stats.numMemReads += BitCount;
+          stats.numRegReads++;
+          stats.numRegWrites += BitCount + 1; 
           break;
         case MISC_SUB:
           // functionally complete, needs stats
