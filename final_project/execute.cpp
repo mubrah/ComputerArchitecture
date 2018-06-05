@@ -228,7 +228,7 @@ void execute() {
   unsigned int addr;
   int i, n, offset;
   unsigned int list, mask;
-  int num1, num2, result, BitCount;
+  int num1, num2, result, BitCount, statOffset, branchOffset;
   unsigned int bit;
 
   /* Convert instruction to correct type */
@@ -561,7 +561,7 @@ void execute() {
          }            
       }
 
-      rf.write(ldm.instr.stm.rn, rf[ldm.instr.ldm.rn] + BitCount * 4);
+      rf.write(ldm.instr.ldm.rn, rf[ldm.instr.ldm.rn] + BitCount * 4);
       stats.numMemReads += BitCount;
       stats.numRegWrites += BitCount + 1;
       stats.numRegReads++;
