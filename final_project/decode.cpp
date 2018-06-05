@@ -136,8 +136,10 @@ ALU_Ops decode (const ALU_Type data) {
 
 DP_Ops decode (const DP_Type data) { 
   if (data.instr.DP_Instr.op == DP_CMP) {
-    // 315: insert code here to print cmp instruction, register-register comparison
-      cout << "cmps r" << data.instr.DP_Instr.rdn << ", r" << setbase(10) << data.instr.DP_Instr.rm << endl; 
+    // complete
+    if (opts.instrs){
+      cout << "cmp r" << data.instr.DP_Instr.rdn << ", r" << data.instr.DP_Instr.rm << endl;
+    }
     return DP_CMP;
   }
   else {
@@ -190,19 +192,27 @@ SP_Ops decode (const SP_Type data) {
 LD_ST_Ops decode (const LD_ST_Type data) {
   if (data.instr.class_type.opA == LD_ST_REG_OPA) {
     if (data.instr.class_type.opB == LD_ST_OPB_LDRB) {
-      // 315: write code to print ldrb
+      if (opts.instrs) { //complete
+        cout << "ldrb r" << data.instr.ld_st_reg.rt << ", [r" << data.instr.ld_st_reg.rn << ", r" << data.instr.ld_st_reg.rm << "]" << endl;
+      }      
       return LDRBR;
     }
     else if (data.instr.class_type.opB == LD_ST_OPB_STRB) {
-      // 315: write code to print strb
+      if (opts.instrs) { //complete
+        cout << "strb r" << data.instr.ld_st_reg.rt << ", [r" << data.instr.ld_st_reg.rn << ", r" << data.instr.ld_st_reg.rm << "]" << endl;
+      }
       return STRBR;
     }
     else if (data.instr.class_type.opB == LD_ST_OPB_LDR) {
-      // 315: write code to print ldr
+      if (opts.instrs) { //complete
+        cout << "ldr r" << data.instr.ld_st_reg.rt << ", [r" << data.instr.ld_st_reg.rn << ", r" << data.instr.ld_st_reg.rm << "]" << endl;
+      }
       return LDRR;
     }
     else if (data.instr.class_type.opB == LD_ST_OPB_STR) {
-      // 315: write code to print str
+      if (opts.instrs) { //complete
+        cout << "str r" << data.instr.ld_st_reg.rt << ", [r" << data.instr.ld_st_reg.rn << ", r" << data.instr.ld_st_reg.rm << "]" << endl;
+      }
       return STRR;
     }
   }
@@ -222,11 +232,17 @@ LD_ST_Ops decode (const LD_ST_Type data) {
   }
   else if (data.instr.class_type.opA == LD_ST_IMMB_OPA) {
     if (data.instr.ld_st_imm.op == LD_ST_LDB) {
-      // 315: write code to print ldrb 
+      //complete
+      if (opts.instrs){
+        cout << "ldrb r" << data.instr.ld_st_imm.rt << ", [r" << data.instr.ld_st_imm.rn << ", #" << setbase(10) << (data.instr.ld_st_imm.imm*4) << "]" << endl;
+      }
       return LDRBI;
     }
     else if (data.instr.ld_st_imm.op == LD_ST_STB) {
-      // 315: write code to print strb
+      // complete
+      if (opts.instrs){
+        cout << "strb r" << data.instr.ld_st_imm.rt << ", [r" << data.instr.ld_st_imm.rn << ", #" << setbase(10) << (data.instr.ld_st_imm.imm*4) << "]" << endl;
+      }
       return STRBI;
     }
   }
@@ -424,17 +440,126 @@ BL_Ops decode (const BL_Type data) {
 }
 
 int decode (const LDM_Type data) {
-  // 315: add code to print ldm 
+  //complete
+  if (opts.instrs) { 
+      bool multiple = FALSE;
+      cout << "ldm ";
+      cout << "r" << data.instr.ldm.rn;
+      cout << "!, {";
+      if (data.instr.ldm.reg_list & 1) {
+        cout << "r0";
+        multiple = TRUE;
+      }
+      if (data.instr.ldm.reg_list & 2) {
+        if (multiple)
+          cout << ", ";
+        cout << "r1";
+        multiple = TRUE;
+      }
+      if (data.instr.ldm.reg_list & 4) {
+        if (multiple)
+          cout << ", ";
+        cout << "r2";
+        multiple = TRUE;
+      }
+      if (data.instr.ldm.reg_list & 8) {
+        if (multiple)
+          cout << ", ";
+        cout << "r3";
+        multiple = TRUE;
+      }
+      if (data.instr.ldm.reg_list & 16) {
+        if (multiple)
+          cout << ", ";
+        cout << "r4";
+        multiple = TRUE;
+      }
+      if (data.instr.ldm.reg_list & 32) {
+        if (multiple)
+          cout << ", ";
+        cout << "r5";
+        multiple = TRUE;
+      }
+      if (data.instr.ldm.reg_list & 64) {
+        if (multiple)
+          cout << ", ";
+        cout << "r6";
+        multiple = TRUE;
+      }
+      if (data.instr.ldm.reg_list & 128) {
+        if (multiple)
+          cout << ", ";
+        cout << "r7";
+        multiple = TRUE;
+      }
+      cout << "}" << endl;
+    }
   return LDM;
 }
 
 int decode (const STM_Type data) {
-  // 315: add code to print ldm 
+  //complete
+  if (opts.instrs) { 
+      bool multiple = FALSE;
+      cout << "ldm ";
+      cout << "r" << data.instr.stm.rn;
+      cout << "!, {";
+      if (data.instr.stm.reg_list & 1) {
+        cout << "r0";
+        multiple = TRUE;
+      }
+      if (data.instr.stm.reg_list & 2) {
+        if (multiple)
+          cout << ", ";
+        cout << "r1";
+        multiple = TRUE;
+      }
+      if (data.instr.stm.reg_list & 4) {
+        if (multiple)
+          cout << ", ";
+        cout << "r2";
+        multiple = TRUE;
+      }
+      if (data.instr.stm.reg_list & 8) {
+        if (multiple)
+          cout << ", ";
+        cout << "r3";
+        multiple = TRUE;
+      }
+      if (data.instr.stm.reg_list & 16) {
+        if (multiple)
+          cout << ", ";
+        cout << "r4";
+        multiple = TRUE;
+      }
+      if (data.instr.stm.reg_list & 32) {
+        if (multiple)
+          cout << ", ";
+        cout << "r5";
+        multiple = TRUE;
+      }
+      if (data.instr.stm.reg_list & 64) {
+        if (multiple)
+          cout << ", ";
+        cout << "r6";
+        multiple = TRUE;
+      }
+      if (data.instr.stm.reg_list & 128) {
+        if (multiple)
+          cout << ", ";
+        cout << "r7";
+        multiple = TRUE;
+      }
+      cout << "}" << endl;
+    }
   return STM;
 }
 
 int decode (const LDRL_Type data) {
-  // 315: add code to print ldr
+  //complete
+  if (opts.instrs) {
+    cout << "ldr r" << data.instr.ldrl.rt << ", [pc, #" << setbase(10) << data.instr.ldrl.imm * 4 << "]" << endl;
+  }
   return LDRL;
 }
 
