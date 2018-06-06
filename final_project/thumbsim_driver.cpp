@@ -112,26 +112,21 @@ bool Cache::access(unsigned int address) {
     unsigned int i;
     int index;
     int byte_select;
-    int tag;
+    int tag, offset, cache_block;
 
     index = log2(blocksize);
     offset = log2(entries.size());
-    tag = address - (index + offset);
-    
+    tag = address >> (index + offset); //reduce the address to just the tag and set it to tag variable
+    cache_block = address % size/blocksize; //calculate block address 
 
-    /* Loop through the entries and check if they are the same */
-    for (i = 0; i < size; i++) {
-       if (entries[i] == tag) {
-          hits++;
-          return true;
-       }
+    if(entries[cache_block] == tag){
+      hits++;
+      return true;
+    } else { 
+      miss++;
+      entries[cache_block == tag]; //maintain locality
+      return false;
     }
-
-    /* At this point, it's definitely a miss */
-    entries[i] = address;
-
-    misses++;
-    return false;
 }
 
 void Stats::print() {
