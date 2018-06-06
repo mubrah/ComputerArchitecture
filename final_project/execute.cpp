@@ -1,5 +1,6 @@
 #include "thumbsim.hpp"
 // These are just the register NUMBERS
+//TODO: EITAN NEEDS TO PUSH THIS TO HIS OWN REPO
 #define PC_REG 15
 #define LR_REG 14
 #define SP_REG 13
@@ -496,7 +497,6 @@ void execute() {
                 addr += 4;
              }            
           }
-
           /* Write to PC register if the m bit is set */
           if (misc.instr.pop.m) {
              rf.write(PC_REG, dmem[addr]);
@@ -528,13 +528,24 @@ void execute() {
       branchOffset = 2 * signExtend8to32ui(cond.instr.b.imm) + 2;
       statOffset = branchOffset - 2;
 
+      if (PC < PC + statOffset){
+        if(checkCondition(cond.instr.b.cond)){
+          stats.numForwardBranchesTaken++;
+        } else {
+          stats.numForardBranchesNotTaken++;
+        }
+      } else {
+        if(checkCondition(cond.instr.b.cond)){
+          stats.numBackwardBranchesTaken++;
+        } else{
+          stats.numBackwardBranchesNotTaken++;
+        }
+      }
       if (checkCondition(cond.instr.b.cond)){
         rf.write(PC_REG, PC + branchOffset);
+         stats.numRegReads++;
+         stats.numRegWrites++; //PC update
       }
-      /* I dont understand the given branch offset and why we mutliply by 2. Once that is figured, I believe that branches forward/backward can be figured too */
-
-      stats.numRegReads++;
-      stats.numRegWrites++; //PC update
 
       break;
     case UNCOND:
@@ -547,7 +558,6 @@ void execute() {
       stats.numRegWrites++; //PC update
       break;
     case LDM:
-      /* TODO: Cache? */
       decode(ldm);
       
       BitCount = countBits(ldm.instr.ldm.reg_list);
@@ -567,7 +577,6 @@ void execute() {
       stats.numRegReads++;
       break;
     case STM:
-      /* TODO: cache */
       decode(stm);
       BitCount = countBits(stm.instr.stm.reg_list);
       addr = rf[stm.instr.stm.rn];

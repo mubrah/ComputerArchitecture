@@ -247,7 +247,7 @@ struct MISC_BKPT_Instr {
 
 struct MISC_Type {
    union {
-      struct {
+       struct {
          unsigned short data: 12;
          unsigned short type_check: 4;
       } class_type;
@@ -463,7 +463,6 @@ static void printCond(char byte) {
          cout << "";
    }
 }
-
 
 
 /* From mipsim.hpp */

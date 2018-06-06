@@ -123,7 +123,7 @@ bool Cache::access(unsigned int address) {
       hits++;
       return true;
     } else { 
-      miss++;
+      misses++;
       entries[cache_block == tag]; //maintain locality
       return false;
     }
