@@ -532,7 +532,7 @@ void execute() {
         if(checkCondition(cond.instr.b.cond)){
           stats.numForwardBranchesTaken++;
         } else {
-          stats.numForardBranchesNotTaken++;
+          stats.numForwardBranchesNotTaken++;
         }
       } else {
         if(checkCondition(cond.instr.b.cond)){
