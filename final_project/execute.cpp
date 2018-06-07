@@ -475,7 +475,6 @@ void execute() {
       misc_ops = decode(misc);
       switch(misc_ops) {
         case MISC_PUSH:
-          /* TODO: Cache */
           BitCount = countBits(misc.instr.push.reg_list) + misc.instr.push.m;
           addr = SP - 4 * BitCount;
           for (i = 0; i < 8; i++) {
@@ -498,7 +497,6 @@ void execute() {
 
           break;
         case MISC_POP:
-          /* TODO: Cache */
           BitCount = countBits(misc.instr.pop.reg_list) + misc.instr.pop.m;
           addr = SP;
 
@@ -564,7 +562,6 @@ void execute() {
     case UNCOND:
       // Essentially the same as the conditional branches, but with no
       // condition check, and an 11-bit immediate field
-      // TODO: Stats
       decode(uncond);
       rf.write(PC_REG, PC + 2 * signExtend11to32ui(uncond.instr.b.imm) + 2);
       stats.numRegReads++;

@@ -113,17 +113,17 @@ bool Cache::access(unsigned int address) {
     int index;
     int tag, offset, cache_block;
 
-    index = log2(blocksize);
-    offset = log2(entries.size());
-    tag = address >> (index + offset); //reduce the address to just the tag and set it to tag variable
-    cache_block = address % size/blocksize; //calculate block address 
+    offset = log2(blocksize);
+    index = log2(size/blocksize);
+    cache_block = address % size / blocksize;
+    tag = address >> (offset + index);
 
     if(entries[cache_block] == tag){
       hits++;
       return true;
     } else { 
       misses++;
-      entries[cache_block == tag]; //maintain locality
+      entries[cache_block] = tag; //maintain locality
       return false;
     }
 }
