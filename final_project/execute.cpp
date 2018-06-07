@@ -254,8 +254,13 @@ void execute() {
   LD_ST_Ops ldst_ops;
   MISC_Ops misc_ops;
 
+  stats.instrs++;
+
+
   // This counts as a write to the PC register
   rf.write(PC_REG, pctarget);
+  stats.numRegWrites++;
+  stats.numRegReads++;
 
   itype = decode(ALL_Types(instr));
 
@@ -364,7 +369,7 @@ void execute() {
         // Target address is also computed from that point
         rf.write(PC_REG, PC + 2 + addr);
 
-        stats.numRegReads += 1;
+        stats.numRegReads++;  
         stats.numRegWrites += 2;
       }
       else {
@@ -446,15 +451,48 @@ void execute() {
            stats.numRegWrites++;
           break;
         case STRBI:
+          addr = rf[ld_st.instr.ld_st_imm.rn] + ld_st.instr.ld_st_imm.imm * 4 - 3;
+          temp = dmem[addr];
+          temp = temp & 0xffffff00;
+          temp = temp | rf[ld_st.instr.ld_st_imm.rt].data_ubyte4(3);
+          dmem.write(addr, temp);
+    
+          caches.access(addr + 3);
+
+          stats.numRegReads +=2;
+          stats.numMemWrites++;
           break;
         case LDRBI:
-          // need to implement
+          addr = rf[ld_st.instr.ld_st_imm.rn] + ld_st.instr.ld_st_imm.imm * 4 - 3;
+          rf.write(ld_st.instr.ld_st_imm.rt, dmem[addr].data_ubyte4(3));
+          
+          caches.access(addr + 3);
+
+          stats.numRegWrites++;
+          stats.numRegReads++;
+          stats.numMemReads++;
           break;
         case STRBR:
-          // need to implement
+          addr = rf[ld_st.instr.ld_st_reg.rn] + rf[ld_st.instr.ld_st_reg.rm] - 3;
+          temp = dmem[addr];
+          temp = temp & 0xffffff00;
+          temp = temp | rf[ld_st.instr.ld_st_reg.rt].data_ubyte4(3);
+          dmem.write(addr, temp);
+
+          caches.access(addr + 3);
+
+          stats.numRegReads +=3;
+          stats.numMemWrites++;
           break;
         case LDRBR:
-          // need to implement
+          addr = rf[ld_st.instr.ld_st_reg.rn] + rf[ld_st.instr.ld_st_reg.rm] - 3;
+          rf.write(ld_st.instr.ld_st_reg.rt, dmem[addr].data_ubyte4(3));
+
+          caches.access(addr + 3);
+
+          stats.numRegWrites++;
+          stats.numRegReads +=2;
+          stats.numMemReads++;
           break;
       }
       break;
