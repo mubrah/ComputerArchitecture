@@ -451,7 +451,6 @@ void execute() {
            stats.numRegWrites++;
           break;
         case STRBI:
-<<<<<<< HEAD
           addr = rf[ld_st.instr.ld_st_imm.rn] + ld_st.instr.ld_st_imm.imm * 4 - 3;
           temp = dmem[addr];
           temp = temp & 0xffffff00;
@@ -494,30 +493,6 @@ void execute() {
           stats.numRegWrites++;
           stats.numRegReads +=2;
           stats.numMemReads++;
-=======
-          /* Still need to implement. This is like the the STRI but you have
-           * to do something with a byte value.
-           * Somehow have to store a byte at a time.
-           * 
-           * I checked Piazza and an instructor said something about a ubyte
-           * function, but I'm not sure what this is.
-           */
-          break;
-        case LDRBI:
-          /*
-           * See comment for STRBI
-           */
-          break;
-        case STRBR:
-          /*
-           * See comment for STRBI
-           */
-          break;
-        case LDRBR:
-          /*
-           * See comment for STRBI
-           */
->>>>>>> 484524d9ca49a22c9bb26f9a9636d27173809523
           break;
       }
       break;
