@@ -111,7 +111,6 @@ void Memory<Data32, Data32>::dump(DataType dt) const {
 bool Cache::access(unsigned int address) {
     unsigned int i;
     int index;
-    int byte_select;
     int tag, offset, cache_block;
 
     offset = log2(blocksize);
