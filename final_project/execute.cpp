@@ -451,44 +451,46 @@ void execute() {
            stats.numRegWrites++;
           break;
         case STRBI:
-          addr = rf[ld_st.instr.ld_st_imm.rn] + ld_st.instr.ld_st_imm.imm * 4 - 3;
+          Data32 temp;
+          
+          addr = rf[ld_st.instr.ld_st_reg.rn] + ld_st.instr.ld_st_reg.imm;
           temp = dmem[addr];
-          temp = temp & 0xffffff00;
-          temp = temp | rf[ld_st.instr.ld_st_imm.rt].data_ubyte4(3);
+          temp.set_data_ubyte4(0, rf[ld_st.instr.ld_st_reg.rt] & 0xFF);
           dmem.write(addr, temp);
-    
-          caches.access(addr + 3);
 
-          stats.numRegReads +=2;
+          caches.access(addr);
+
+          stats.numRegReads += 2;
           stats.numMemWrites++;
           break;
         case LDRBI:
-          addr = rf[ld_st.instr.ld_st_imm.rn] + ld_st.instr.ld_st_imm.imm * 4 - 3;
-          rf.write(ld_st.instr.ld_st_imm.rt, dmem[addr].data_ubyte4(3));
-          
-          caches.access(addr + 3);
+          addr = rf[ld_st.instr.ld_st_reg.rn] + ld_st.instr.ld_st_reg.imm;
+          rf.write(rf[ld_st.instsr.ld_st_reg.rt], dmem[addr].data_ubyte4(0));
+
+          caches.access(addr);
 
           stats.numRegWrites++;
-          stats.numRegReads++;
+          stats.numRegReads++;;
           stats.numMemReads++;
           break;
         case STRBR:
-          addr = rf[ld_st.instr.ld_st_reg.rn] + rf[ld_st.instr.ld_st_reg.rm] - 3;
+          Data32 temp;
+          
+          addr = rf[ld_st.instr.ld_st_reg.rn] + rf[ld_st.instr.ld_st_reg.rm];
           temp = dmem[addr];
-          temp = temp & 0xffffff00;
-          temp = temp | rf[ld_st.instr.ld_st_reg.rt].data_ubyte4(3);
+          temp.set_data_ubyte4(0, rf[ld_st.instr.ld_st_reg.rt] & 0xFF);
           dmem.write(addr, temp);
 
-          caches.access(addr + 3);
+          caches.access(addr);
 
           stats.numRegReads +=3;
           stats.numMemWrites++;
           break;
         case LDRBR:
-          addr = rf[ld_st.instr.ld_st_reg.rn] + rf[ld_st.instr.ld_st_reg.rm] - 3;
-          rf.write(ld_st.instr.ld_st_reg.rt, dmem[addr].data_ubyte4(3));
+          addr = rf[ld_st.instr.ld_st_reg.rn] + rf[ld_st.instr.ld_st_reg.rm];
+          rf.write(rf[ld_st.instsr.ld_st_reg.rt], dmem[addr].data_ubyte4(0));
 
-          caches.access(addr + 3);
+          caches.access(addr);
 
           stats.numRegWrites++;
           stats.numRegReads +=2;
