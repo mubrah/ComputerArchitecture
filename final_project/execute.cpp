@@ -446,16 +446,28 @@ void execute() {
            stats.numRegWrites++;
           break;
         case STRBI:
-          // need to implement
+          /* Still need to implement. This is like the the STRI but you have
+           * to do something with a byte value.
+           * Somehow have to store a byte at a time.
+           * 
+           * I checked Piazza and an instructor said something about a ubyte
+           * function, but I'm not sure what this is.
+           */
           break;
         case LDRBI:
-          // need to implement
+          /*
+           * See comment for STRBI
+           */
           break;
         case STRBR:
-          // need to implement
+          /*
+           * See comment for STRBI
+           */
           break;
         case LDRBR:
-          // need to implement
+          /*
+           * See comment for STRBI
+           */
           break;
       }
       break;
@@ -528,11 +540,12 @@ void execute() {
       branchOffset = 2 * signExtend8to32ui(cond.instr.b.imm) + 2;
       statOffset = branchOffset - 2;
 
-      if (PC < PC + statOffset){
+      /* was originally PC < PC + statOffset */
+      if (0 < statOffset){
         if(checkCondition(cond.instr.b.cond)){
           stats.numForwardBranchesTaken++;
         } else {
-          stats.numForardBranchesNotTaken++;
+          stats.numForwardBranchesNotTaken++;
         }
       } else {
         if(checkCondition(cond.instr.b.cond)){
