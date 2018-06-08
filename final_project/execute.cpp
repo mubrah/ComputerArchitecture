@@ -556,19 +556,16 @@ void execute() {
       // this should work for all your conditional branches.
       // needs stats
       branchOffset = 2 * signExtend8to32ui(cond.instr.b.imm) + 2;
-      statOffset = branchOffset - 2;
 
       if(checkCondition(cond.instr.b.cond)){
-        if(statOffset > 0){
+        if(branchOffset > 0){
           stats.numForwardBranchesTaken++;
         } else {
-          stats.numForwardBranchesNotTaken++;
-        }
-      } 
-
-      if(checkCondition(cond.instr.b.cond)){
-        if(statOffset < 0){
           stats.numBackwardBranchesTaken++;
+        }
+      } else {
+        if(branchOffset > 0){
+          stats.numForwardBranchesNotTaken++;
         } else {
           stats.numBackwardBranchesNotTaken++;
         }
