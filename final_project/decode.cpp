@@ -189,7 +189,7 @@ SP_Ops decode (const SP_Type data) {
         }
         // this case is for registers greater than r7 that aren't sp, might be Error here TODO? 
         else {
-          cout << " r" << setbase(10) << (8+data.instr.add.rd) << ", r" << setbase(10) << data.instr.add.rm << endl;
+          cout << " r" << setbase(10) << (8+data.instr.add.rd) << ", r" << setbase(10) << (8+data.instr.add.rd) << ", r" << setbase(10) << data.instr.add.rm << endl;
         }
       }
       // another stack pointer case
@@ -547,7 +547,7 @@ int decode (const STM_Type data) {
   //complete
   if (opts.instrs) { 
       bool multiple = FALSE;
-      cout << "ldm ";
+      cout << "stm ";
       cout << "r" << data.instr.stm.rn;
       cout << "!, {";
       if (data.instr.stm.reg_list & 1) {
