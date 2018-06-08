@@ -460,7 +460,7 @@ void execute() {
           break;
         case LDRBI:
           addr = rf[ld_st.instr.ld_st_reg.rn] + ld_st.instr.ld_st_imm.imm;
-          rf.write(rf[ld_st.instr.ld_st_reg.rt], dmem[addr].data_ubyte4(0));
+          rf.write(ld_st.instr.ld_st_reg.rt, dmem[addr].data_ubyte4(0));
 
           caches.access(addr);
 
@@ -481,7 +481,7 @@ void execute() {
           break;
         case LDRBR:
           addr = rf[ld_st.instr.ld_st_reg.rn] + rf[ld_st.instr.ld_st_reg.rm];
-          rf.write(rf[ld_st.instr.ld_st_reg.rt], dmem[addr].data_ubyte4(0));
+          rf.write(ld_st.instr.ld_st_reg.rt, dmem[addr].data_ubyte4(0));
 
           caches.access(addr);
 
