@@ -558,7 +558,23 @@ void execute() {
       branchOffset = 2 * signExtend8to32ui(cond.instr.b.imm) + 2;
       statOffset = branchOffset - 2;
 
-      /* was originally PC < PC + statOffset */
+      if(checkCondition(cond.instr.b.cond)){
+        if(statOffset > 0){
+          stats.numForwardBranchesTaken++;
+        } else {
+          stats.numForwardBranchesNotTaken++;
+        }
+      } 
+
+      if(checkCondition(cond.instr.b.cond)){
+        if(statOffset < 0){
+          stats.numBackwardBranchesTaken++;
+        } else {
+          stats.numBackwardBranchesNotTaken++;
+        }
+      }
+
+      /* was originally PC < PC + statOffset 
       if (0 < statOffset){
         if(checkCondition(cond.instr.b.cond)){
           stats.numForwardBranchesTaken++;
@@ -572,8 +588,10 @@ void execute() {
           stats.numBackwardBranchesNotTaken++;
         }
       }
+      */
+
       if (checkCondition(cond.instr.b.cond)){
-        rf.write(PC_REG, PC + branchOffset);
+         rf.write(PC_REG, PC + branchOffset);
          stats.numRegReads++;
          stats.numRegWrites++; //PC update
       }
@@ -587,9 +605,9 @@ void execute() {
       stats.numRegReads++;
       stats.numRegWrites++; //PC update
       break;
+
     case LDM:
       decode(ldm);
-      
       BitCount = countBits(ldm.instr.ldm.reg_list);
       addr = rf[ldm.instr.ldm.rn];
 
