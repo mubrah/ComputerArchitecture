@@ -113,20 +113,21 @@ bool Cache::access(unsigned int address) {
     unsigned int index;
     unsigned int tag;
     unsigned int offset;
+    unsigned int set_index;
 
     offset = log2(blocksize);
-    num_index_bits = log2(size);
+    num_index_bits = log2(entries.size());
+    address = address >> offset; 
+    set_index = address % entries.size();
+    tag = address >> num_index_bits;
+    
 
-    index = (address >> offset) & ((1 << num_index_bits) - 1);
-
-    tag = address >> (offset + num_index_bits);
-
-    if (entries[index] == tag) {
+    if (entries[set_index] == tag) {
         hits++;
         return true;
     } else { 
         misses++;
-        entries[index] = tag; //maintain locality
+        entries[set_index] = tag; //maintain locality
         return false;
     }
 }
