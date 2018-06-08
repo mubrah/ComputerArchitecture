@@ -24,12 +24,14 @@ unsigned int signExtend8to32ui(char i) {
   return static_cast<unsigned int>(static_cast<int>(i));
 }
 
-int signExtend11to32ui(short i) {
-  if(i & 1024) { //11th bit is set or not
-    i = i | 63488; //logic OR 15:11 if yes
-  }
-  return i;
+unsigned int signExtend11to32ui(short i) {
+    if (i & 0x0800) {
+        i |= 0xF000;
+    } 
+    
+    return signExtend16to32ui(i);
 }
+
 
 // This is the global object you'll use to store condition codes N,Z,V,C
 // Set these bits appropriately in execute below.
