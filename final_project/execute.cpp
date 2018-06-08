@@ -366,7 +366,7 @@ void execute() {
         // Target address is also computed from that point
         rf.write(PC_REG, PC + 2 + addr);
 
-        stats.numRegReads++;  
+        stats.numRegReads += 1;  
         stats.numRegWrites += 2;
       }
       else {
@@ -579,9 +579,10 @@ void execute() {
       if (checkCondition(cond.instr.b.cond)){
          rf.write(PC_REG, PC + branchOffset);
          stats.numRegWrites++; //PC update
+        stats.numRegReads++;
+
       }
       
-      stats.numRegReads++;
       break;
     case UNCOND:
       // Essentially the same as the conditional branches, but with no
@@ -589,6 +590,7 @@ void execute() {
       decode(uncond);
       rf.write(PC_REG, PC + (2 * signExtend11to32ui(uncond.instr.b.imm) + 2));
       stats.numRegWrites++; //PC update
+      stats.numRegReads++;
       break;
 
     case LDM:
