@@ -601,7 +601,7 @@ void execute() {
       // Essentially the same as the conditional branches, but with no
       // condition check, and an 11-bit immediate field
       decode(uncond);
-      rf.write(PC_REG, PC + 2 * signExtend11to32ui(uncond.instr.b.imm) + 2);
+      rf.write(PC_REG, PC + (2 * signExtend11to32ui(uncond.instr.b.imm) + 2));
       stats.numRegReads++;
       stats.numRegWrites++; //PC update
       break;
@@ -664,9 +664,11 @@ void execute() {
       stats.numMemReads++;
       break;
     case ADD_SP:
-      // complete
       decode(addsp);
       rf.write(addsp.instr.add.rd, SP + (addsp.instr.add.imm*4));
+      setNegativeFlag(SP + (addsp.instr.add.imm*4));
+      setZeroFlag(SP + (addsp.instr.add.imm*4));
+      setCarryOverflow(SP,addsp.instr.add.imm*4, OF_ADD);
       stats.numRegReads++;
       stats.numRegWrites++; 
       break;
