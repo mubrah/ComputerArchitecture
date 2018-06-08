@@ -312,12 +312,10 @@ void execute() {
         case ALU_MOV:
           rf.write(alu.instr.mov.rdn, alu.instr.mov.imm);
           setNegativeFlag(alu.instr.mov.imm);
-          flags.C = 0; //manual set of zero 
-          setCarryOverflow(rf[alu.instr.mov.rdn],alu.instr.mov.imm, OF_SUB);
+          setZeroFlag(alu.instr.mov.imm);
           stats.numRegWrites++;
           break;
         case ALU_CMP:
-          // NO rf.write, will subtract cmp.rdn - cmp.imm and update flags accordingly 
           setCarryOverflow(rf[alu.instr.cmp.rdn], alu.instr.cmp.imm, OF_SUB);
           setNegativeFlag(rf[alu.instr.cmp.rdn] - alu.instr.cmp.imm);
           setZeroFlag(rf[alu.instr.cmp.rdn] - alu.instr.cmp.imm);
@@ -381,8 +379,8 @@ void execute() {
       switch(dp_ops) {
         case DP_CMP: //done
           setCarryOverflow(rf[dp.instr.DP_Instr.rdn], dp.instr.DP_Instr.rm, OF_SUB);
-          setZeroFlag(rf[dp.instr.DP_Instr.rdn] - dp.instr.DP_Instr.rm);
-          setNegativeFlag(rf[dp.instr.DP_Instr.rdn] - dp.instr.DP_Instr.rm);
+          setZeroFlag(rf[dp.instr.DP_Instr.rdn] - rf[dp.instr.DP_Instr.rm]);
+          setNegativeFlag(rf[dp.instr.DP_Instr.rdn] - rf[dp.instr.DP_Instr.rm]);
           stats.numRegReads += 2;
           break;
       }
@@ -398,16 +396,16 @@ void execute() {
           stats.numRegReads++;
           break;
         case SP_ADD:
-          setZeroFlag(rf[(sp.instr.add.d << 3 ) | sp.instr.add.rd] + rf[sp.instr.add.rm]);
-          setNegativeFlag(rf[(sp.instr.add.d << 3 ) | sp.instr.add.rd] + rf[sp.instr.add.rm]);
-          setCarryOverflow(rf[(sp.instr.add.d << 3 ) | sp.instr.add.rd], rf[sp.instr.add.rm], OF_ADD);
+          setZeroFlag(rf[((sp.instr.add.d << 3 ) | sp.instr.add.rd)] + rf[sp.instr.add.rm]);
+          setNegativeFlag(rf[((sp.instr.add.d << 3 ) | sp.instr.add.rd)] + rf[sp.instr.add.rm]);
+          setCarryOverflow(rf[((sp.instr.add.d << 3 ) | sp.instr.add.rd)], rf[sp.instr.add.rm], OF_ADD);
           rf.write((sp.instr.add.d << 3 ) | sp.instr.add.rd, rf[(sp.instr.add.d << 3 ) | sp.instr.add.rd] + rf[sp.instr.add.rm]);
           stats.numRegWrites++;
           stats.numRegReads += 2;
         case SP_CMP:
-          setZeroFlag(rf[(sp.instr.cmp.d << 3 ) | sp.instr.cmp.rd] - rf[sp.instr.cmp.rm]);
-          setNegativeFlag(rf[(sp.instr.cmp.d << 3 ) | sp.instr.cmp.rd] - rf[sp.instr.cmp.rm]);
-          setCarryOverflow(rf[(sp.instr.cmp.d << 3 ) | sp.instr.cmp.rd], rf[sp.instr.cmp.rm], OF_SUB);
+          setZeroFlag(rf[((sp.instr.cmp.d << 3 ) | sp.instr.cmp.rd)] - rf[sp.instr.cmp.rm]);
+          setNegativeFlag(rf[((sp.instr.cmp.d << 3 ) | sp.instr.cmp.rd)] - rf[sp.instr.cmp.rm]);
+          setCarryOverflow(rf[((sp.instr.cmp.d << 3 ) | sp.instr.cmp.rd)], rf[sp.instr.cmp.rm], OF_SUB);
           stats.numRegReads += 2;
           break;
       }
@@ -445,9 +443,10 @@ void execute() {
            addr = rf[ld_st.instr.ld_st_reg.rn] + rf[ld_st.instr.ld_st_reg.rm];
            rf.write(ld_st.instr.ld_st_reg.rt, dmem[addr]);
            caches.access(addr);
-           stats.numRegReads++;
+
            stats.numRegReads += 2;
            stats.numRegWrites++;
+           stats.numMemReads++;
           break;
         case STRBI:
           addr = rf[ld_st.instr.ld_st_reg.rn] + ld_st.instr.ld_st_imm.imm;
@@ -504,19 +503,21 @@ void execute() {
                 dmem.write(addr, rf[i]);
                 caches.access(addr);
                 addr += 4;
+                stats.numRegReads++;
+                stats.numMemWrites++;
              }            
           }
           /* Write to PC register if the m bit is set */
           if (misc.instr.push.m) {
              dmem.write(addr, LR);
              caches.access(addr);
+             stats.numRegReads++;
+             stats.numMemWrites++;
           }
 
           rf.write(SP_REG, SP - BitCount * 4);
-          stats.numMemWrites += BitCount; 
-          stats.numRegReads += BitCount + 1; // Plus one because need to read SP each time push called
           stats.numRegWrites++; //Updating stack pointer
-
+          stats.numRegReads++;
           break;
         case MISC_POP:
           BitCount = countBits(misc.instr.pop.reg_list) + misc.instr.pop.m;
@@ -558,50 +559,35 @@ void execute() {
       // this should work for all your conditional branches.
       // needs stats
       branchOffset = 2 * signExtend8to32ui(cond.instr.b.imm) + 2;
+      statOffset = branchOffset - 2;
 
       if(checkCondition(cond.instr.b.cond)){
-        if(branchOffset > 0){
+        if(statOffset > 0){
           stats.numForwardBranchesTaken++;
         } else {
           stats.numBackwardBranchesTaken++;
         }
       } else {
-        if(branchOffset > 0){
+        if(statOffset > 0){
           stats.numForwardBranchesNotTaken++;
         } else {
           stats.numBackwardBranchesNotTaken++;
         }
       }
 
-      /* was originally PC < PC + statOffset 
-      if (0 < statOffset){
-        if(checkCondition(cond.instr.b.cond)){
-          stats.numForwardBranchesTaken++;
-        } else {
-          stats.numForwardBranchesNotTaken++;
-        }
-      } else {
-        if(checkCondition(cond.instr.b.cond)){
-          stats.numBackwardBranchesTaken++;
-        } else{
-          stats.numBackwardBranchesNotTaken++;
-        }
-      }
-      */
 
       if (checkCondition(cond.instr.b.cond)){
          rf.write(PC_REG, PC + branchOffset);
-         stats.numRegReads++;
          stats.numRegWrites++; //PC update
       }
-
+      
+      stats.numRegReads++;
       break;
     case UNCOND:
       // Essentially the same as the conditional branches, but with no
       // condition check, and an 11-bit immediate field
       decode(uncond);
       rf.write(PC_REG, PC + (2 * signExtend11to32ui(uncond.instr.b.imm) + 2));
-      stats.numRegReads++;
       stats.numRegWrites++; //PC update
       break;
 
@@ -633,13 +619,14 @@ void execute() {
             dmem.write(addr, rf[i]);
             caches.access(addr);
             addr += 4;
+            stats.numRegReads++;
          }            
       }
 
       rf.write(stm.instr.stm.rn, rf[stm.instr.stm.rn] + BitCount * 4);
       stats.numMemWrites += BitCount;
-      stats.numRegReads += BitCount + 1;
       stats.numRegWrites++;
+      stats.numRegReads++;
       break;
     case LDRL:
       // This instruction is complete, nothing needed
