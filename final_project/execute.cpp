@@ -519,6 +519,7 @@ void execute() {
           stats.numRegWrites++; //Updating stack pointer
           stats.numRegReads++;
           break;
+
         case MISC_POP:
           BitCount = countBits(misc.instr.pop.reg_list) + misc.instr.pop.m;
           addr = SP;
